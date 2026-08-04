@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #fafaf8;
+            color: #000;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Tab System */
+        .tab-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #000;
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            background: none;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            color: #000;
+            opacity: 0.4;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: opacity 0.2s, border-color 0.2s;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            opacity: 0.7;
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            border-bottom-color: #000;
+        }
+
+        .tab-btn .tab-close {
+            display: none;
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        .tab-btn.deletable .tab-close {
+            display: inline;
+        }
+
+        .tab-btn .tab-close:hover {
+            opacity: 1;
+        }
+
+        .tab-add-btn {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            background: none;
+            border: none;
+            padding: 0.6rem 0.8rem;
+            cursor: pointer;
+            color: #000;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .tab-add-btn:hover {
+            opacity: 1;
+        }
+
+        /* New Tab Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(250, 250, 248, 0.9);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            border: 1px solid #000;
+            padding: 2rem;
+            width: 360px;
+            max-width: 90vw;
+        }
+
+        .modal-box h2 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-box label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-box input {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 0.4rem 0;
+            background: transparent;
+            color: #000;
+            outline: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions button {
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-actions .btn-primary {
+            background: #000;
+            color: #fff;
+            border: none;
+        }
+
+        .modal-actions .btn-secondary {
+            background: none;
+            border: 1px solid #000;
+            color: #000;
+        }
+
+        /* Add Event Panel */
+        .add-panel {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid #e0ddd8;
+            padding-bottom: 2rem;
+        }
+
+        .add-toggle {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            background: none;
+            border: 1px solid #000;
+            padding: 0.5rem 1.2rem;
+            cursor: pointer;
+            color: #000;
+            transition: all 0.2s;
+        }
+
+        .add-form {
+            display: none;
+            margin-top: 1.5rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            max-width: 600px;
+        }
+
+        .add-form.visible {
+            display: grid;
+        }
+
+        .add-form label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .add-form label.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .add-form input,
+        .add-form textarea {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 0.4rem 0;
+            background: transparent;
+            color: #000;
+            outline: none;
+        }
+
+        .add-form input::placeholder,
+        .add-form textarea::placeholder {
+            color: #000;
+            opacity: 0.5;
+        }
+
+        .add-form textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .form-actions button {
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .add-form button[type="submit"] {
+            background: #000;
+            color: #fff;
+            border: none;
+        }
+
+        .delete-event-form-btn {
+            display: none;
+            background: #a33;
+            color: #fff;
+            border: 1px solid #a33;
+        }
+
+        .delete-event-form-btn.visible {
+            display: block;
+        }
+
+        .delete-event-form-btn:hover {
+            background: #7f2222;
+            border-color: #7f2222;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            position: relative;
+            overflow-x: auto;
+            padding: 1rem 0 2rem;
+            min-height: 60vh;
+        }
+
+        .timeline-scroll {
+            position: relative;
+            min-width: 100%;
+            padding-top: 2rem;
+        }
+
+        .timeline-axis {
+            position: relative;
+            height: 30px;
+            border-bottom: 1px solid #000;
+        }
+
+        .year-mark {
+            position: absolute;
+            bottom: -1px;
+            font-size: 0.8rem;
+            color: #000;
+            letter-spacing: 0.1em;
+            transform: translateX(-50%);
+        }
+
+        .year-mark::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            width: 1px;
+            height: 8px;
+            background: #000;
+        }
+
+        .lanes-container {
+            position: relative;
+            margin-top: 0.5rem;
+        }
+
+        /* Event Bars */
+        .event-bar {
+            position: absolute;
+            height: 36px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            border: 1px solid transparent;
+        }
+
+        .event-bar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 2px;
+            background: var(--event-color);
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .event-bar:hover::before {
+            opacity: 0.9;
+        }
+
+        .event-bar.active::before {
+            opacity: 1;
+        }
+
+        .event-bar .bar-label {
+            position: relative;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Event Detail Popup */
+        .event-detail {
+            position: absolute;
+            z-index: 100;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 1rem;
+            width: 280px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        }
+
+        .event-detail.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .event-detail .detail-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.3rem;
+        }
+
+        .event-detail .detail-dates {
+            font-size: 0.65rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        .event-detail .detail-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 0.8rem;
+            filter: grayscale(30%);
+        }
+
+        .event-detail .detail-image-placeholder {
+            width: 100%;
+            height: 80px;
+            background: #f0efec;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .event-detail .detail-notes {
+            font-size: 0.7rem;
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin-top 0.3s ease;
+        }
+
+        .event-detail.expanded .detail-notes {
+            max-height: 400px;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #000;
+        }
+
+        .event-detail .expand-hint {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 0.5rem;
+            opacity: 0.5;
+        }
+
+        .event-detail.expanded .expand-hint {
+            display: none;
+        }
+
+        .event-detail .edit-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 2.5rem;
+            background: none;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 0.6rem;
+            color: #000;
+            cursor: pointer;
+            padding: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .event-detail .delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+            color: #000;
+            cursor: pointer;
+            padding: 0.2rem;
+            line-height: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        .grid-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #000;
+            opacity: 0.15;
+        }
+
+        .lane-guideline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #000;
+            opacity: 0.15;
+        }
+
+        :root {
+            --event-color: #7a8b7a;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Timeline Notes</h1>
+
+        <!-- Tabs -->
+        <div class="tab-bar" id="tabBar"></div>
+
+        <!-- New Tab Modal -->
+        <div class="modal-overlay" id="newTabModal">
+            <div class="modal-box">
+                <h2>New Timeline</h2>
+                <label>
+                    Title
+                    <input type="text" id="newTabTitle" placeholder="e.g. Vietnam War">
+                </label>
+                <label>
+                    Start Year
+                    <input type="number" id="newTabStart" placeholder="1955" min="1800" max="2100">
+                </label>
+                <label>
+                    End Year
+                    <input type="number" id="newTabEnd" placeholder="1976" min="1800" max="2100">
+                </label>
+                <div class="modal-actions">
+                    <button class="btn-primary" id="newTabConfirm">Create</button>
+                    <button class="btn-secondary" id="newTabCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Event -->
+        <div class="add-panel">
+            <button class="add-toggle" id="addToggle">+ Add Event</button>
+            <form class="add-form" id="addForm">
+                <label>
+                    Title
+                    <input type="text" id="eventTitle" required placeholder="e.g. Cuban Missile Crisis">
+                </label>
+                <label>
+                    Image URL
+                    <input type="text" id="eventImage" placeholder="https://...">
+                </label>
+                <label>
+                    Start Date
+                    <input type="date" id="eventStart" required>
+                </label>
+                <label>
+                    End Date
+                    <input type="date" id="eventEnd" required>
+                </label>
+                <label class="full-width">
+                    Notes
+                    <textarea id="eventNotes" placeholder="Key observations, context, quotes..."></textarea>
+                </label>
+                <div class="form-actions">
+                    <button type="submit" id="formSubmitBtn">Save Event</button>
+                    <button type="button" id="deleteEventBtn" class="delete-event-form-btn">Delete Event</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-container">
+            <div class="timeline-scroll" id="timelineScroll">
+                <div class="timeline-axis" id="timelineAxis"></div>
+                <div class="lanes-container" id="lanesContainer"></div>
+            </div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            No events yet — add your first entry above
+        </div>
+    </div>
+
+    <script>
+        const COLORS = [
+            '#7a8b7a', '#8b7a6b', '#6b7a8b', '#8b6b7a',
+            '#7a7a6b', '#6b8b7a', '#8b8b6b', '#6b6b8b',
+            '#9b7a6b', '#6b8b8b', '#8b6b6b', '#6b9b7a'
+        ];
+
+        const LANE_HEIGHT = 44;
+        const LANE_GAP = 6;
+        const STORAGE_KEY = 'timelineApp';
+
+        // Default data
+        const defaultData = {
+            activeTab: 'wwii',
+            tabs: [
+                {
+                    id: 'wwii',
+                    title: 'WWII',
+                    deletable: false,
+                    yearStart: 1939,
+                    yearEnd: 1946,
+                    events: [
+                        {
+                            id: 1, title: 'North African Campaign',
+                            start: '1940-06-10', end: '1943-05-13',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/British_tanks_advance_in_North_Africa.jpg/320px-British_tanks_advance_in_North_Africa.jpg',
+                            notes: 'The campaign saw major engagements at El Alamein (1st and 2nd), Tobruk, and the Torch landings. Rommel\'s Afrika Korps initially pushed Allied forces back but supply lines over the Mediterranean proved untenable. Montgomery\'s methodical approach at El Alamein turned the tide.',
+                            color: COLORS[0]
+                        },
+                        {
+                            id: 2, title: 'Siege of Stalingrad',
+                            start: '1942-08-23', end: '1943-02-02',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/RIAN_archive_602161_The_center_of_Stalingrad_after_liberation.jpg/320px-RIAN_archive_602161_The_center_of_Stalingrad_after_liberation.jpg',
+                            notes: 'The battle became a symbol of Soviet resistance. Urban combat reduced the city to rubble. Operation Uranus (Nov 1942) encircled the 6th Army. Paulus surrendered in Feb 1943 — a turning point on the Eastern Front. Estimated casualties: ~2 million combined.',
+                            color: COLORS[2]
+                        },
+                        {
+                            id: 3, title: 'Battle of Midway',
+                            start: '1942-06-04', end: '1942-06-07',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/SBD-3_Dauntless_bombers_of_VS-8_over_the_burning_Japanese_cruiser_Mikuma_on_6_June_1942.jpg/320px-SBD-3_Dauntless_bombers_of_VS-8_over_the_burning_Japanese_cruiser_Mikuma_on_6_June_1942.jpg',
+                            notes: 'Decisive naval engagement in the Pacific. US codebreakers intercepted Japanese plans. Four Japanese carriers sunk. Shifted strategic initiative to the US in the Pacific theater.',
+                            color: COLORS[3]
+                        },
+                        {
+                            id: 4, title: 'Operation Barbarossa',
+                            start: '1941-06-22', end: '1941-12-05',
+                            image: '',
+                            notes: 'German invasion of the Soviet Union. Largest military operation in history. Three army groups pushed deep into Soviet territory. Stalled before Moscow in December 1941 due to weather, logistics, and Soviet resistance.',
+                            color: COLORS[1]
+                        }
+                    ]
+                },
+                {
+                    id: 'cold-war',
+                    title: 'Cold War',
+                    deletable: false,
+                    yearStart: 1947,
+                    yearEnd: 1992,
+                    events: [
+                        {
+                            id: 1, title: 'Berlin Blockade',
+                            start: '1948-06-24', end: '1949-05-12',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/C-54landingattemplehof.jpg/320px-C-54landingattemplehof.jpg',
+                            notes: 'Soviet Union blocked Western Allied access to Berlin. The Western Allies responded with a massive airlift, delivering supplies for 11 months. Demonstrated Western resolve without escalating to direct conflict. Led to the formal split of Germany into East and West.',
+                            color: COLORS[4]
+                        },
+                        {
+                            id: 2, title: 'Korean War',
+                            start: '1950-06-25', end: '1953-07-27',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/US_Marine_in_Korea.jpg/320px-US_Marine_in_Korea.jpg',
+                            notes: 'First major armed conflict of the Cold War. North Korea invaded the South; UN forces (primarily US) intervened, then China entered on the North\'s side. Ended in armistice, not peace treaty. Demonstrated the policy of containment in practice.',
+                            color: COLORS[1]
+                        },
+                        {
+                            id: 3, title: 'Vietnam War',
+                            start: '1955-11-01', end: '1975-04-30',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Vietnam_War_collage.jpg/320px-Vietnam_War_collage.jpg',
+                            notes: 'Longest US military engagement. Proxy conflict between communist North and US-backed South. Tet Offensive (1968) shifted American public opinion. Saigon fell April 1975. ~3 million Vietnamese and 58,000+ Americans killed.',
+                            color: COLORS[5]
+                        },
+                        {
+                            id: 4, title: 'Cuban Missile Crisis',
+                            start: '1962-10-16', end: '1962-10-28',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Soviet-R-12-nuclear-ballistic_missile.jpg/320px-Soviet-R-12-nuclear-ballistic_missile.jpg',
+                            notes: '13 days in October when the world came closest to nuclear war. US discovered Soviet missiles in Cuba. Naval quarantine imposed. Resolved through secret diplomacy — missiles withdrawn in exchange for US pledge not to invade Cuba and removal of Jupiter missiles from Turkey.',
+                            color: COLORS[3]
+                        },
+                        {
+                            id: 5, title: 'Berlin Wall',
+                            start: '1961-08-13', end: '1989-11-09',
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/BerlinWall-BrandenburgGate.jpg/320px-BerlinWall-BrandenburgGate.jpg',
+                            notes: 'Constructed overnight to stop East German emigration to the West. Stood for 28 years as the physical symbol of the Iron Curtain. Its fall in 1989 was precipitated by Gorbachev\'s reforms, mass protests, and a miscommunicated policy announcement.',
+                            color: COLORS[6]
+                        },
+                        {
+                            id: 6, title: 'Soviet–Afghan War',
+                            start: '1979-12-24', end: '1989-02-15',
+                            image: '',
+                            notes: 'USSR invaded to prop up communist government. Mujahideen resistance backed by US, Pakistan, Saudi Arabia. Became "Russia\'s Vietnam" — costly, unpopular, ultimately unsuccessful. Withdrawal under Gorbachev. Accelerated Soviet economic and political decline.',
+                            color: COLORS[7]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let appData = loadAppData();
+        let activeEventId = null;
+        let detailEl = null;
+        let editingEventId = null;
+
+        function loadAppData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.tabs && parsed.tabs.length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.error('Load error:', e);
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+            return JSON.parse(JSON.stringify(defaultData));
+        }
+
+        function saveAppData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            } catch (e) {
+                console.error('Save error:', e);
+            }
+        }
+
+        function getActiveTab() {
+            return appData.tabs.find(t => t.id === appData.activeTab) || appData.tabs[0];
+        }
+
+        function getNextEventId(tab) {
+            if (tab.events.length === 0) return 1;
+            return Math.max(...tab.events.map(e => Number(e.id) || 0)) + 1;
+        }
+
+        function getTimelineWidth() {
+            return Math.max(window.innerWidth - 100, 900);
+        }
+
+        function dateToX(dateStr, tab) {
+            const d = new Date(dateStr);
+            const start = new Date(`${tab.yearStart}-01-01`);
+            const end = new Date(`${tab.yearEnd}-01-01`);
+            const ratio = (d - start) / (end - start);
+            return ratio * getTimelineWidth();
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function eventsOverlap(a, b) {
+            return new Date(a.start) <= new Date(b.end) && new Date(b.start) <= new Date(a.end);
+        }
+
+        function assignLanes(evts) {
+            const sorted = [...evts].sort((a, b) => new Date(a.start) - new Date(b.start));
+            const lanes = [];
+            sorted.forEach(evt => {
+                let placed = false;
+                for (let i = 0; i < lanes.length; i++) {
+                    const last = lanes[i][lanes[i].length - 1];
+                    if (!eventsOverlap(evt, last)) {
+                        lanes[i].push(evt);
+                        evt.lane = i;
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) {
+                    evt.lane = lanes.length;
+                    lanes.push([evt]);
+                }
+            });
+            return lanes.length;
+        }
+
+        // Render tabs
+        function renderTabs() {
+            const bar = document.getElementById('tabBar');
+            bar.innerHTML = '';
+
+            appData.tabs.forEach(tab => {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (tab.id === appData.activeTab ? ' active' : '') + (tab.deletable ? ' deletable' : '');
+                btn.innerHTML = `${tab.title}${tab.deletable ? '<span class="tab-close">×</span>' : ''}`;
+
+                btn.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('tab-close')) {
+                        deleteTab(tab.id);
+                        return;
+                    }
+                    switchTab(tab.id);
+                });
+
+                bar.appendChild(btn);
+            });
+
+            const addBtn = document.createElement('button');
+            addBtn.className = 'tab-add-btn';
+            addBtn.textContent = '+';
+            addBtn.title = 'New timeline';
+            addBtn.addEventListener('click', openNewTabModal);
+            bar.appendChild(addBtn);
+        }
+
+        function switchTab(tabId) {
+            hideDetail();
+            closeForm();
+            appData.activeTab = tabId;
+            saveAppData();
+            renderTabs();
+            renderTimeline();
+        }
+
+        function deleteTab(tabId) {
+            const tab = appData.tabs.find(t => t.id === tabId);
+            if (!tab || !tab.deletable) return;
+            if (!confirm(`Delete "${tab.title}" timeline and all its events?`)) return;
+
+            appData.tabs = appData.tabs.filter(t => t.id !== tabId);
+            if (appData.activeTab === tabId) {
+                appData.activeTab = appData.tabs[0].id;
+            }
+            saveAppData();
+            renderTabs();
+            renderTimeline();
+        }
+
+        // New Tab Modal
+        function openNewTabModal() {
+            document.getElementById('newTabModal').classList.add('visible');
+            document.getElementById('newTabTitle').value = '';
+            document.getElementById('newTabStart').value = '';
+            document.getElementById('newTabEnd').value = '';
+            setTimeout(() => document.getElementById('newTabTitle').focus(), 100);
+        }
+
+        document.getElementById('newTabCancel').addEventListener('click', () => {
+            document.getElementById('newTabModal').classList.remove('visible');
+        });
+
+        document.getElementById('newTabConfirm').addEventListener('click', () => {
+            const title = document.getElementById('newTabTitle').value.trim();
+            const yStart = parseInt(document.getElementById('newTabStart').value) || 2000;
+            const yEnd = parseInt(document.getElementById('newTabEnd').value) || (yStart + 10);
+
+            if (!title) { alert('Please enter a title.'); return; }
+            if (yEnd <= yStart) { alert('End year must be after start year.'); return; }
+
+            const newTab = {
+                id: 'custom-' + Date.now(),
+                title,
+                deletable: true,
+                yearStart: yStart,
+                yearEnd: yEnd,
+                events: []
+            };
+
+            appData.tabs.push(newTab);
+            appData.activeTab = newTab.id;
+            saveAppData();
+            document.getElementById('newTabModal').classList.remove('visible');
+            renderTabs();
+            renderTimeline();
+        });
+
+        document.getElementById('newTabModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById('newTabModal').classList.remove('visible');
+            }
+        });
+
+        // Timeline rendering
+        function renderAxis(tab) {
+            const axis = document.getElementById('timelineAxis');
+            axis.innerHTML = '';
+            const width = getTimelineWidth();
+            axis.style.width = width + 'px';
+
+            const range = tab.yearEnd - tab.yearStart;
+            let step = 1;
+            if (range > 30) step = 5;
+            else if (range > 15) step = 2;
+
+            for (let year = tab.yearStart; year <= tab.yearEnd; year += step) {
+                const mark = document.createElement('div');
+                mark.className = 'year-mark';
+                const x = dateToX(`${year}-01-01`, tab);
+                mark.style.left = x + 'px';
+                mark.textContent = year;
+                axis.appendChild(mark);
+            }
+        }
+
+        function renderTimeline() {
+            const tab = getActiveTab();
+            const container = document.getElementById('lanesContainer');
+            const scroll = document.getElementById('timelineScroll');
+            const emptyState = document.getElementById('emptyState');
+
+            container.innerHTML = '';
+            const width = getTimelineWidth();
+            scroll.style.width = width + 'px';
+
+            renderAxis(tab);
+
+            if (tab.events.length === 0) {
+                emptyState.style.display = 'block';
+                container.style.height = '100px';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            const totalLanes = assignLanes(tab.events);
+            const totalHeight = totalLanes * (LANE_HEIGHT + LANE_GAP) + 20;
+            container.style.height = totalHeight + 'px';
+
+            // Lane guidelines
+            for (let i = 0; i < totalLanes; i++) {
+                const guide = document.createElement('div');
+                guide.className = 'lane-guideline';
+                guide.style.top = (i * (LANE_HEIGHT + LANE_GAP) + LANE_HEIGHT / 2) + 'px';
+                container.appendChild(guide);
+            }
+
+            // Grid lines
+            const range = tab.yearEnd - tab.yearStart;
+            let step = 1;
+            if (range > 30) step = 5;
+            else if (range > 15) step = 2;
+
+            for (let year = tab.yearStart; year <= tab.yearEnd; year += step) {
+                const gl = document.createElement('div');
+                gl.className = 'grid-line';
+                gl.style.left = dateToX(`${year}-01-01`, tab) + 'px';
+                container.appendChild(gl);
+            }
+
+            // Event bars
+            tab.events.forEach(evt => {
+                const bar = document.createElement('div');
+                bar.className = 'event-bar';
+                bar.dataset.id = evt.id;
+                bar.style.setProperty('--event-color', evt.color);
+
+                const startX = dateToX(evt.start, tab);
+                const endX = dateToX(evt.end, tab);
+                const barWidth = Math.max(endX - startX, 8);
+
+                bar.style.left = startX + 'px';
+                bar.style.width = barWidth + 'px';
+                bar.style.top = (evt.lane * (LANE_HEIGHT + LANE_GAP)) + 'px';
+
+                const label = document.createElement('span');
+                label.className = 'bar-label';
+                label.textContent = evt.title;
+                bar.appendChild(label);
+
+                bar.addEventListener('mouseenter', () => showDetail(evt, bar, tab));
+                bar.addEventListener('mouseleave', () => {
+                    window._hideTimer = setTimeout(() => {
+                        if (activeEventId !== evt.id) hideDetail();
+                    }, 200);
+                });
+                bar.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleExpand(evt, bar);
+                });
+
+                container.appendChild(bar);
+            });
+        }
+
+        function showDetail(evt, barEl, tab) {
+            if (detailEl) detailEl.remove();
+
+            const container = document.getElementById('lanesContainer');
+            detailEl = document.createElement('div');
+            detailEl.className = 'event-detail';
+
+            let imageHtml = evt.image
+                ? `<img class="detail-image" src="${evt.image}" alt="${evt.title}" onerror="this.outerHTML='<div class=\\'detail-image-placeholder\\'>image unavailable</div>'">`
+                : `<div class="detail-image-placeholder">no image</div>`;
+
+            const notesHtml = evt.notes ? `<div class="detail-notes">${evt.notes}</div>` : '';
+
+            detailEl.innerHTML = `
+                <button class="edit-btn" data-id="${evt.id}">EDIT</button>
+                <button class="delete-btn" data-id="${evt.id}">×</button>
+                <div class="detail-title">${evt.title}</div>
+                <div class="detail-dates">${formatDate(evt.start)} — ${formatDate(evt.end)}</div>
+                ${imageHtml}
+                <div class="expand-hint">click for notes</div>
+                ${notesHtml}
+            `;
+
+            let left = barEl.offsetLeft;
+            let top = barEl.offsetTop + LANE_HEIGHT + 8;
+            if (left + 280 > getTimelineWidth()) left = getTimelineWidth() - 290;
+            if (left < 0) left = 0;
+
+            detailEl.style.left = left + 'px';
+            detailEl.style.top = top + 'px';
+            container.appendChild(detailEl);
+
+            requestAnimationFrame(() => {
+                detailEl.classList.add('visible');
+                if (activeEventId === evt.id) detailEl.classList.add('expanded');
+            });
+
+            detailEl.querySelector('.edit-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openEditForm(evt);
+            });
+
+            detailEl.querySelector('.delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                hideDetail();
+            });
+
+            detailEl.addEventListener('mouseenter', () => clearTimeout(window._hideTimer));
+            detailEl.addEventListener('mouseleave', () => {
+                window._hideTimer = setTimeout(() => {
+                    if (activeEventId !== evt.id) hideDetail();
+                }, 300);
+            });
+            detailEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!e.target.classList.contains('delete-btn') && !e.target.classList.contains('edit-btn')) {
+                    toggleExpand(evt, barEl);
+                }
+            });
+        }
+
+        function hideDetail() {
+            if (detailEl) {
+                detailEl.classList.remove('visible');
+                const cur = detailEl;
+                setTimeout(() => { cur.remove(); if (detailEl === cur) detailEl = null; }, 200);
+            }
+            activeEventId = null;
+            document.querySelectorAll('.event-bar.active').forEach(el => el.classList.remove('active'));
+        }
+
+        function toggleExpand(evt, barEl) {
+            if (activeEventId === evt.id) {
+                activeEventId = null;
+                barEl.classList.remove('active');
+                if (detailEl) detailEl.classList.remove('expanded');
+            } else {
+                activeEventId = evt.id;
+                document.querySelectorAll('.event-bar.active').forEach(el => el.classList.remove('active'));
+                barEl.classList.add('active');
+                if (!detailEl) {
+                    showDetail(evt, barEl, getActiveTab());
+                }
+                detailEl.classList.add('expanded');
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.event-bar') && !e.target.closest('.event-detail')) {
+                hideDetail();
+            }
+        });
+
+        // Form
+        const addToggle = document.getElementById('addToggle');
+        const addForm = document.getElementById('addForm');
+        const deleteEventBtn = document.getElementById('deleteEventBtn');
+        const formSubmitBtn = document.getElementById('formSubmitBtn');
+
+        function closeForm() {
+            addForm.classList.remove('visible');
+            editingEventId = null;
+            formSubmitBtn.textContent = 'Save Event';
+            deleteEventBtn.classList.remove('visible');
+            addForm.reset();
+        }
+
+        function openEditForm(evt) {
+            editingEventId = evt.id;
+            hideDetail();
+            document.getElementById('eventTitle').value = evt.title;
+            document.getElementById('eventImage').value = evt.image || '';
+            document.getElementById('eventStart').value = evt.start;
+            document.getElementById('eventEnd').value = evt.end;
+            document.getElementById('eventNotes').value = evt.notes || '';
+            formSubmitBtn.textContent = 'Update Event';
+            deleteEventBtn.classList.add('visible');
+            addForm.classList.add('visible');
+            addForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        addToggle.addEventListener('click', () => {
+            if (addForm.classList.contains('visible')) {
+                closeForm();
+            } else {
+                editingEventId = null;
+                formSubmitBtn.textContent = 'Save Event';
+                deleteEventBtn.classList.remove('visible');
+                addForm.classList.add('visible');
+            }
+        });
+
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const tab = getActiveTab();
+            const title = document.getElementById('eventTitle').value.trim();
+            const image = document.getElementById('eventImage').value.trim();
+            const start = document.getElementById('eventStart').value;
+            const end = document.getElementById('eventEnd').value;
+            const notes = document.getElementById('eventNotes').value.trim();
+
+            if (!title || !start || !end) return;
+            if (new Date(end) < new Date(start)) { alert('End date must be after start date.'); return; }
+
+            if (editingEventId !== null) {
+                const evt = tab.events.find(ev => ev.id === editingEventId);
+                if (evt) {
+                    evt.title = title; evt.image = image;
+                    evt.start = start; evt.end = end; evt.notes = notes;
+                }
+            } else {
+                tab.events.push({
+                    id: getNextEventId(tab),
+                    title, start, end, image, notes,
+                    color: COLORS[(tab.events.length) % COLORS.length]
+                });
+            }
+
+            saveAppData();
+            closeForm();
+            renderTimeline();
+        });
+
+        deleteEventBtn.addEventListener('click', () => {
+            if (editingEventId === null) return;
+            const tab = getActiveTab();
+            const evt = tab.events.find(ev => ev.id === editingEventId);
+            if (!evt) return;
+            if (!confirm(`Delete "${evt.title}"?`)) return;
+
+            tab.events = tab.events.filter(ev => ev.id !== editingEventId);
+            saveAppData();
+            closeForm();
+            renderTimeline();
+        });
+
+        // Resize handler
+        window.addEventListener('resize', () => { hideDetail(); renderTimeline(); });
+
+        // Initial render
+        renderTabs();
+        renderTimeline();
+    </script>
+</body>
+</html>
