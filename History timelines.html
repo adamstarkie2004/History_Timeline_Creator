@@ -751,7 +751,7 @@
         }
 
         function eventsOverlap(a, b) {
-            return new Date(a.start) <= new Date(b.end) && new Date(b.start) <= new Date(a.end);
+            return new Date(a.start) < new Date(b.end) && new Date(b.start) < new Date(a.end);
         }
 
         function assignLanes(evts) {
