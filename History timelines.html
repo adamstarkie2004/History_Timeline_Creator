@@ -341,7 +341,7 @@
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            padding: 0 8px;
+            padding: 0 2px;
             border: 1px solid transparent;
         }
 
@@ -948,7 +948,7 @@
 
                 const startX = dateToX(evt.start, tab);
                 const endX = dateToX(evt.end, tab);
-                const barWidth = Math.max(endX - startX, 8);
+                const barWidth = Math.max(endX - startX, 2);
 
                 bar.style.left = startX + 'px';
                 bar.style.width = barWidth + 'px';
