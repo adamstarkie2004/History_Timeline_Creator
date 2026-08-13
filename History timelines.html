@@ -182,7 +182,7 @@
 
         /* Add Event Panel */
         .add-panel {
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
             border-bottom: 1px solid #e0ddd8;
             padding-bottom: 2rem;
         }
@@ -299,7 +299,7 @@
         .timeline-scroll {
             position: relative;
             min-width: 100%;
-            padding-top: 2rem;
+            padding-top: 1rem;
         }
 
         .timeline-axis {
@@ -455,6 +455,7 @@
         }
 
         .event-detail .edit-btn {
+            display: none;
             position: absolute;
             top: 0.5rem;
             right: 2.5rem;
@@ -470,6 +471,7 @@
         }
 
         .event-detail .delete-btn {
+            display: none;
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
@@ -480,6 +482,11 @@
             cursor: pointer;
             padding: 0.2rem;
             line-height: 1;
+        }
+
+        .event-detail.expanded .edit-btn,
+        .event-detail.expanded .delete-btn {
+            display: block;
         }
 
         .empty-state {
