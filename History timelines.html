@@ -683,7 +683,8 @@
             const start = new Date(`${tab.yearStart}-01-01`);
             const end = new Date(`${tab.yearEnd}-01-01`);
             const ratio = (d - start) / (end - start);
-            return ratio * getTimelineWidth() + AXIS_PADDING_LEFT;
+            const usableWidth = getTimelineWidth() - AXIS_PADDING_LEFT;
+            return ratio * usableWidth + AXIS_PADDING_LEFT;
         }
 
         function formatDate(dateStr) {
@@ -794,7 +795,7 @@
         document.getElementById('newTabConfirm').addEventListener('click', () => {
             const title = document.getElementById('newTabTitle').value.trim();
             const yStart = parseInt(document.getElementById('newTabStart').value) || 2000;
-            const yEnd = parseInt(document.getElementById('newTabEnd').value) || (yStart + 10);
+            const yEnd = parseInt(document.getElementById('newTabEnd').value) + 1 || (yStart + 10);
 
             if (!title) { alert('Please enter a title.'); return; }
             if (yEnd <= yStart) { alert('End year must be after start year.'); return; }
@@ -827,14 +828,14 @@
             const axis = document.getElementById('timelineAxis');
             axis.innerHTML = '';
             const width = getTimelineWidth();
-            axis.style.width = (width + AXIS_PADDING_LEFT) + 'px';
+            axis.style.width = width + 'px';
 
             const range = tab.yearEnd - tab.yearStart;
             let step = 1;
             if (range > 30) step = 5;
             else if (range > 15) step = 2;
 
-            for (let year = tab.yearStart; year <= tab.yearEnd; year += step) {
+            for (let year = tab.yearStart; year <= (tab.yearEnd - 1); year += step) {
                 const mark = document.createElement('div');
                 mark.className = 'year-mark';
                 const x = dateToX(`${year}-01-01`, tab);
@@ -866,7 +867,7 @@
 
             container.innerHTML = '';
             const width = getTimelineWidth();
-            scroll.style.width = (width + AXIS_PADDING_LEFT) + 'px';
+            scroll.style.width = width + 'px';
 
             renderAxis(tab);
 
