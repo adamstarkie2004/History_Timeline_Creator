@@ -515,6 +515,19 @@
             opacity: 0.15;
         }
 
+        .empty-dashboard {
+            display: none;
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+
+        .empty-dashboard-text {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+        }
+
         :root {
             --event-color: #7a8b7a;
         }
@@ -589,6 +602,11 @@
             </div>
         </div>
 
+        <div class="empty-dashboard" id="emptyDashboard">
+            <p class="empty-dashboard-text">You don't have any timelines yet</p>
+            <button class="add-toggle" id="emptyDashboardCreateBtn">+ Create Your First Timeline</button>
+        </div>
+
         <div class="empty-state" id="emptyState">
             No events yet — add your first entry above
         </div>
@@ -608,97 +626,8 @@
 
         // Default data
         const defaultData = {
-            activeTab: 'wwii',
-            tabs: [
-                {
-                    id: 'wwii',
-                    title: 'WWII',
-                    deletable: false,
-                    yearStart: 1939,
-                    yearEnd: 1946,
-                    events: [
-                        {
-                            id: 1, title: 'North African Campaign',
-                            start: '1940-06-10', end: '1943-05-13',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/British_tanks_advance_in_North_Africa.jpg/320px-British_tanks_advance_in_North_Africa.jpg',
-                            notes: 'The campaign saw major engagements at El Alamein (1st and 2nd), Tobruk, and the Torch landings. Rommel\'s Afrika Korps initially pushed Allied forces back but supply lines over the Mediterranean proved untenable. Montgomery\'s methodical approach at El Alamein turned the tide.',
-                            color: COLORS[0]
-                        },
-                        {
-                            id: 2, title: 'Siege of Stalingrad',
-                            start: '1942-08-23', end: '1943-02-02',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/RIAN_archive_602161_The_center_of_Stalingrad_after_liberation.jpg/320px-RIAN_archive_602161_The_center_of_Stalingrad_after_liberation.jpg',
-                            notes: 'The battle became a symbol of Soviet resistance. Urban combat reduced the city to rubble. Operation Uranus (Nov 1942) encircled the 6th Army. Paulus surrendered in Feb 1943 — a turning point on the Eastern Front. Estimated casualties: ~2 million combined.',
-                            color: COLORS[2]
-                        },
-                        {
-                            id: 3, title: 'Battle of Midway',
-                            start: '1942-06-04', end: '1942-06-07',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/SBD-3_Dauntless_bombers_of_VS-8_over_the_burning_Japanese_cruiser_Mikuma_on_6_June_1942.jpg/320px-SBD-3_Dauntless_bombers_of_VS-8_over_the_burning_Japanese_cruiser_Mikuma_on_6_June_1942.jpg',
-                            notes: 'Decisive naval engagement in the Pacific. US codebreakers intercepted Japanese plans. Four Japanese carriers sunk. Shifted strategic initiative to the US in the Pacific theater.',
-                            color: COLORS[3]
-                        },
-                        {
-                            id: 4, title: 'Operation Barbarossa',
-                            start: '1941-06-22', end: '1941-12-05',
-                            image: '',
-                            notes: 'German invasion of the Soviet Union. Largest military operation in history. Three army groups pushed deep into Soviet territory. Stalled before Moscow in December 1941 due to weather, logistics, and Soviet resistance.',
-                            color: COLORS[1]
-                        }
-                    ]
-                },
-                {
-                    id: 'cold-war',
-                    title: 'Cold War',
-                    deletable: false,
-                    yearStart: 1947,
-                    yearEnd: 1992,
-                    events: [
-                        {
-                            id: 1, title: 'Berlin Blockade',
-                            start: '1948-06-24', end: '1949-05-12',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/C-54landingattemplehof.jpg/320px-C-54landingattemplehof.jpg',
-                            notes: 'Soviet Union blocked Western Allied access to Berlin. The Western Allies responded with a massive airlift, delivering supplies for 11 months. Demonstrated Western resolve without escalating to direct conflict. Led to the formal split of Germany into East and West.',
-                            color: COLORS[4]
-                        },
-                        {
-                            id: 2, title: 'Korean War',
-                            start: '1950-06-25', end: '1953-07-27',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/US_Marine_in_Korea.jpg/320px-US_Marine_in_Korea.jpg',
-                            notes: 'First major armed conflict of the Cold War. North Korea invaded the South; UN forces (primarily US) intervened, then China entered on the North\'s side. Ended in armistice, not peace treaty. Demonstrated the policy of containment in practice.',
-                            color: COLORS[1]
-                        },
-                        {
-                            id: 3, title: 'Vietnam War',
-                            start: '1955-11-01', end: '1975-04-30',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Vietnam_War_collage.jpg/320px-Vietnam_War_collage.jpg',
-                            notes: 'Longest US military engagement. Proxy conflict between communist North and US-backed South. Tet Offensive (1968) shifted American public opinion. Saigon fell April 1975. ~3 million Vietnamese and 58,000+ Americans killed.',
-                            color: COLORS[5]
-                        },
-                        {
-                            id: 4, title: 'Cuban Missile Crisis',
-                            start: '1962-10-16', end: '1962-10-28',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Soviet-R-12-nuclear-ballistic_missile.jpg/320px-Soviet-R-12-nuclear-ballistic_missile.jpg',
-                            notes: '13 days in October when the world came closest to nuclear war. US discovered Soviet missiles in Cuba. Naval quarantine imposed. Resolved through secret diplomacy — missiles withdrawn in exchange for US pledge not to invade Cuba and removal of Jupiter missiles from Turkey.',
-                            color: COLORS[3]
-                        },
-                        {
-                            id: 5, title: 'Berlin Wall',
-                            start: '1961-08-13', end: '1989-11-09',
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/BerlinWall-BrandenburgGate.jpg/320px-BerlinWall-BrandenburgGate.jpg',
-                            notes: 'Constructed overnight to stop East German emigration to the West. Stood for 28 years as the physical symbol of the Iron Curtain. Its fall in 1989 was precipitated by Gorbachev\'s reforms, mass protests, and a miscommunicated policy announcement.',
-                            color: COLORS[6]
-                        },
-                        {
-                            id: 6, title: 'Soviet–Afghan War',
-                            start: '1979-12-24', end: '1989-02-15',
-                            image: '',
-                            notes: 'USSR invaded to prop up communist government. Mujahideen resistance backed by US, Pakistan, Saudi Arabia. Became "Russia\'s Vietnam" — costly, unpopular, ultimately unsuccessful. Withdrawal under Gorbachev. Accelerated Soviet economic and political decline.',
-                            color: COLORS[7]
-                        }
-                    ]
-                }
-            ]
+            activeTab: null,
+            tabs: []
         };
 
         // State
@@ -712,7 +641,7 @@
                 const saved = localStorage.getItem(STORAGE_KEY);
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    if (parsed && parsed.tabs && parsed.tabs.length > 0) {
+                    if (parsed && Array.isArray(parsed.tabs)) {
                         return parsed;
                     }
                 }
@@ -731,7 +660,12 @@
             }
         }
 
+        function hasTabs() {
+            return appData.tabs && appData.tabs.length > 0;
+        }
+
         function getActiveTab() {
+            if (!hasTabs()) return null;
             return appData.tabs.find(t => t.id === appData.activeTab) || appData.tabs[0];
         }
 
@@ -789,6 +723,12 @@
             const bar = document.getElementById('tabBar');
             bar.innerHTML = '';
 
+            if (!hasTabs()) {
+                bar.style.display = 'none';
+                return;
+            }
+            bar.style.display = 'flex';
+
             appData.tabs.forEach(tab => {
                 const btn = document.createElement('button');
                 btn.className = 'tab-btn' + (tab.id === appData.activeTab ? ' active' : '') + (tab.deletable ? ' deletable' : '');
@@ -829,7 +769,7 @@
 
             appData.tabs = appData.tabs.filter(t => t.id !== tabId);
             if (appData.activeTab === tabId) {
-                appData.activeTab = appData.tabs[0].id;
+                appData.activeTab = appData.tabs.length > 0 ? appData.tabs[0].id : null;
             }
             saveAppData();
             renderTabs();
@@ -848,6 +788,8 @@
         document.getElementById('newTabCancel').addEventListener('click', () => {
             document.getElementById('newTabModal').classList.remove('visible');
         });
+
+        document.getElementById('emptyDashboardCreateBtn').addEventListener('click', openNewTabModal);
 
         document.getElementById('newTabConfirm').addEventListener('click', () => {
             const title = document.getElementById('newTabTitle').value.trim();
@@ -903,10 +845,24 @@
         }
 
         function renderTimeline() {
+            const emptyDashboard = document.getElementById('emptyDashboard');
+            const addPanel = document.querySelector('.add-panel');
+            const timelineContainer = document.querySelector('.timeline-container');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!hasTabs()) {
+                emptyDashboard.style.display = 'block';
+                addPanel.style.display = 'none';
+                timelineContainer.style.display = 'none';
+                emptyState.style.display = 'none';
+                return;
+            }
+            emptyDashboard.style.display = 'none';
+            addPanel.style.display = 'block';
+            timelineContainer.style.display = 'block';
             const tab = getActiveTab();
             const container = document.getElementById('lanesContainer');
             const scroll = document.getElementById('timelineScroll');
-            const emptyState = document.getElementById('emptyState');
 
             container.innerHTML = '';
             const width = getTimelineWidth();
