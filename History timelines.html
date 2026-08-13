@@ -597,6 +597,7 @@
         const LANE_HEIGHT = 44;
         const LANE_GAP = 6;
         const STORAGE_KEY = 'timelineApp';
+        const AXIS_PADDING_LEFT = 30;
 
         // Default data
         const defaultData = {
@@ -741,7 +742,7 @@
             const start = new Date(`${tab.yearStart}-01-01`);
             const end = new Date(`${tab.yearEnd}-01-01`);
             const ratio = (d - start) / (end - start);
-            return ratio * getTimelineWidth();
+            return ratio * getTimelineWidth() + AXIS_PADDING_LEFT;
         }
 
         function formatDate(dateStr) {
@@ -877,7 +878,7 @@
             const axis = document.getElementById('timelineAxis');
             axis.innerHTML = '';
             const width = getTimelineWidth();
-            axis.style.width = width + 'px';
+            axis.style.width = (width + AXIS_PADDING_LEFT) + 'px';
 
             const range = tab.yearEnd - tab.yearStart;
             let step = 1;
@@ -902,7 +903,7 @@
 
             container.innerHTML = '';
             const width = getTimelineWidth();
-            scroll.style.width = width + 'px';
+            scroll.style.width = (width + AXIS_PADDING_LEFT) + 'px';
 
             renderAxis(tab);
 
