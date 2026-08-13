@@ -963,7 +963,7 @@
                 bar.addEventListener('mouseenter', () => showDetail(evt, bar, tab));
                 bar.addEventListener('mouseleave', () => {
                     window._hideTimer = setTimeout(() => {
-                        if (activeEventId !== evt.id) hideDetail();
+                        if (activeEventId !== evt.id) hideDetail(evt.id);
                     }, 200);
                 });
                 bar.addEventListener('click', (e) => {
@@ -976,11 +976,13 @@
         }
 
         function showDetail(evt, barEl, tab) {
+            clearTimeout(window._hideTimer);
             if (detailEl) detailEl.remove();
 
             const container = document.getElementById('lanesContainer');
             detailEl = document.createElement('div');
             detailEl.className = 'event-detail';
+            detailEl.dataset.eventId = evt.id;
 
             let imageHtml = evt.image
                 ? `<img class="detail-image" src="${evt.image}" alt="${evt.title}" onerror="this.outerHTML='<div class=\\'detail-image-placeholder\\'>image unavailable</div>'">`
@@ -1025,7 +1027,7 @@
             detailEl.addEventListener('mouseenter', () => clearTimeout(window._hideTimer));
             detailEl.addEventListener('mouseleave', () => {
                 window._hideTimer = setTimeout(() => {
-                    if (activeEventId !== evt.id) hideDetail();
+                    if (activeEventId !== evt.id) hideDetail(evt.id);
                 }, 300);
             });
             detailEl.addEventListener('click', (e) => {
@@ -1036,7 +1038,11 @@
             });
         }
 
-        function hideDetail() {
+        function hideDetail(forId) {
+            if (forId !== undefined && (!detailEl || String(detailEl.dataset.eventId) !== String(forId))) {
+                return;
+            }
+
             if (detailEl) {
                 detailEl.classList.remove('visible');
                 const cur = detailEl;
