@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timeline Notes</title>
+    <script>
+        // Apply the saved (or system) theme before the page paints to avoid a flash
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem('timelineTheme'); } catch (e) {}
+            if (theme !== 'light' && theme !== 'dark') {
+                theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            }
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -11,27 +22,133 @@
             box-sizing: border-box;
         }
 
+
+        /* Theme colours */
+        :root {
+            color-scheme: light;
+            --bg: #fafaf8;
+            --fg: #000;
+            --surface: #fff;
+            --surface-alt: #f0efec;
+            --rule-soft: #e0ddd8;
+            --overlay: rgba(250, 250, 248, 0.9);
+            --invert-bg: #000;
+            --invert-fg: #fff;
+            --selection: rgba(0, 0, 0, 0.06);
+            --clip-edge: rgba(0, 0, 0, 0.6);
+            --shadow: rgba(0, 0, 0, 0.06);
+            --bar-text: #000;
+            --bar-opacity: 0.8;
+            --bar-opacity-hover: 0.9;
+            --bar-opacity-active: 1;
+            --event-color: #7a8b7a;
+        }
+
+
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #141413;
+            --fg: #e8e6e1;
+            --surface: #1e1e1c;
+            --surface-alt: #2a2a27;
+            --rule-soft: #33322f;
+            --overlay: rgba(20, 20, 19, 0.9);
+            --invert-bg: #e8e6e1;
+            --invert-fg: #141413;
+            --selection: rgba(255, 255, 255, 0.08);
+            --clip-edge: rgba(255, 255, 255, 0.6);
+            --shadow: rgba(0, 0, 0, 0.5);
+            --bar-text: #f2f0ea;
+            --bar-opacity: 0.55;
+            --bar-opacity-hover: 0.68;
+            --bar-opacity-active: 0.8;
+        }
+
+
         body {
             font-family: 'Courier New', monospace;
-            background: #fafaf8;
-            color: #000;
+            background: var(--bg);
+            color: var(--fg);
             min-height: 100vh;
             padding: 2rem;
+            transition: background-color 0.2s, color 0.2s;
         }
+
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
 
         h1 {
             font-size: 1.3rem;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.3em;
-            color: #000;
-            margin-bottom: 0.5rem;
+            color: var(--fg);
         }
+
+
+        /* Light / dark toggle */
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--fg);
+            font-family: 'Courier New', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding: 0.3rem 0;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+
+        .theme-toggle:hover {
+            opacity: 1;
+        }
+
+
+        .theme-toggle-track {
+            position: relative;
+            width: 30px;
+            height: 14px;
+            border: 1px solid var(--fg);
+            border-radius: 2px;
+        }
+
+
+        .theme-toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 1px;
+            background: var(--fg);
+            transition: transform 0.2s;
+        }
+
+
+        :root[data-theme="dark"] .theme-toggle-knob {
+            transform: translateX(16px);
+        }
+
 
         .app-container {
             max-width: 1400px;
             margin: 0 auto;
         }
+
 
         /* Tab System */
         .tab-bar {
@@ -39,9 +156,10 @@
             align-items: flex-end;
             gap: 0;
             margin-bottom: 2rem;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid var(--fg);
             padding-bottom: 0;
         }
+
 
         .tab-btn {
             font-family: 'Courier New', monospace;
@@ -52,7 +170,7 @@
             border: none;
             padding: 0.6rem 1.2rem;
             cursor: pointer;
-            color: #000;
+            color: var(--fg);
             opacity: 0.4;
             border-bottom: 2px solid transparent;
             margin-bottom: -1px;
@@ -61,14 +179,17 @@
             white-space: nowrap;
         }
 
+
         .tab-btn:hover {
             opacity: 0.7;
         }
 
+
         .tab-btn.active {
             opacity: 1;
-            border-bottom-color: #000;
+            border-bottom-color: var(--fg);
         }
+
 
         .tab-btn .tab-close {
             display: none;
@@ -78,13 +199,16 @@
             cursor: pointer;
         }
 
+
         .tab-btn.deletable .tab-close {
             display: inline;
         }
 
+
         .tab-btn .tab-close:hover {
             opacity: 1;
         }
+
 
         .tab-add-btn {
             font-family: 'Courier New', monospace;
@@ -93,37 +217,42 @@
             border: none;
             padding: 0.6rem 0.8rem;
             cursor: pointer;
-            color: #000;
+            color: var(--fg);
             opacity: 0.4;
             transition: opacity 0.2s;
         }
 
+
         .tab-add-btn:hover {
             opacity: 1;
         }
+
 
         /* New Tab Modal */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(250, 250, 248, 0.9);
+            background: var(--overlay);
             z-index: 500;
             align-items: center;
             justify-content: center;
         }
 
+
         .modal-overlay.visible {
             display: flex;
         }
 
+
         .modal-box {
-            background: #fff;
-            border: 1px solid #000;
+            background: var(--surface);
+            border: 1px solid var(--fg);
             padding: 2rem;
             width: 360px;
             max-width: 90vw;
         }
+
 
         .modal-box h2 {
             font-size: 0.7rem;
@@ -131,6 +260,7 @@
             letter-spacing: 0.2em;
             margin-bottom: 1.5rem;
         }
+
 
         .modal-box label {
             font-size: 0.65rem;
@@ -142,22 +272,25 @@
             margin-bottom: 1rem;
         }
 
+
         .modal-box input {
             font-family: 'Courier New', monospace;
             font-size: 0.8rem;
             border: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid var(--fg);
             padding: 0.4rem 0;
             background: transparent;
-            color: #000;
+            color: var(--fg);
             outline: none;
         }
+
 
         .modal-actions {
             display: flex;
             gap: 0.75rem;
             margin-top: 1.5rem;
         }
+
 
         .modal-actions button {
             font-family: 'Courier New', monospace;
@@ -168,24 +301,28 @@
             cursor: pointer;
         }
 
+
         .modal-actions .btn-primary {
-            background: #000;
-            color: #fff;
+            background: var(--invert-bg);
+            color: var(--invert-fg);
             border: none;
         }
 
+
         .modal-actions .btn-secondary {
             background: none;
-            border: 1px solid #000;
-            color: #000;
+            border: 1px solid var(--fg);
+            color: var(--fg);
         }
+
 
         /* Add Event Panel */
         .add-panel {
             margin-bottom: 1rem;
-            border-bottom: 1px solid #e0ddd8;
+            border-bottom: 1px solid var(--rule-soft);
             padding-bottom: 2rem;
         }
+
 
         .add-toggle {
             font-family: 'Courier New', monospace;
@@ -193,12 +330,13 @@
             text-transform: uppercase;
             letter-spacing: 0.2em;
             background: none;
-            border: 1px solid #000;
+            border: 1px solid var(--fg);
             padding: 0.5rem 1.2rem;
             cursor: pointer;
-            color: #000;
+            color: var(--fg);
             transition: all 0.2s;
         }
+
 
         .add-form {
             display: none;
@@ -208,46 +346,54 @@
             max-width: 600px;
         }
 
+
         .add-form.visible {
             display: grid;
         }
+
 
         .add-form label {
             font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            color: #000;
+            color: var(--fg);
             display: flex;
             flex-direction: column;
             gap: 0.3rem;
         }
 
+
         .add-form label.full-width {
             grid-column: 1 / -1;
         }
+
 
         .add-form input,
         .add-form textarea {
             font-family: 'Courier New', monospace;
             font-size: 0.8rem;
             border: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid var(--fg);
             padding: 0.4rem 0;
             background: transparent;
-            color: #000;
+            color: var(--fg);
             outline: none;
         }
 
+
         .add-form input::placeholder,
-        .add-form textarea::placeholder {
-            color: #000;
+        .add-form textarea::placeholder,
+        .modal-box input::placeholder {
+            color: var(--fg);
             opacity: 0.5;
         }
+
 
         .add-form textarea {
             resize: vertical;
             min-height: 60px;
         }
+
 
         .form-actions {
             grid-column: 1 / -1;
@@ -255,6 +401,7 @@
             gap: 0.75rem;
             align-items: center;
         }
+
 
         .form-actions button {
             font-family: 'Courier New', monospace;
@@ -266,11 +413,13 @@
             transition: background 0.2s;
         }
 
+
         .add-form button[type="submit"] {
-            background: #000;
-            color: #fff;
+            background: var(--invert-bg);
+            color: var(--invert-fg);
             border: none;
         }
+
 
         .delete-event-form-btn {
             display: none;
@@ -279,14 +428,17 @@
             border: 1px solid #a33;
         }
 
+
         .delete-event-form-btn.visible {
             display: block;
         }
+
 
         .delete-event-form-btn:hover {
             background: #7f2222;
             border-color: #7f2222;
         }
+
 
         /* Timeline */
         .timeline-container {
@@ -296,26 +448,66 @@
             min-height: 60vh;
         }
 
+
         .timeline-scroll {
             position: relative;
             min-width: 100%;
             padding-top: 1rem;
+            user-select: none;
+            -webkit-user-select: none;
         }
+
 
         .timeline-axis {
             position: relative;
-            height: 30px;
-            border-bottom: 1px solid #000;
+            height: 46px;
+            border-bottom: 1px solid var(--fg);
+            cursor: crosshair;
+            touch-action: none;
         }
+
+
+        .axis-context {
+            position: absolute;
+            top: 0;
+            height: 16px;
+            line-height: 16px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding-left: 5px;
+            border-left: 1px solid var(--fg);
+            white-space: nowrap;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+
+        .axis-context:hover {
+            text-decoration: underline;
+        }
+
 
         .year-mark {
             position: absolute;
             bottom: -1px;
             font-size: 0.8rem;
-            color: #000;
+            color: var(--fg);
             letter-spacing: 0.1em;
             transform: translateX(-50%);
+            white-space: nowrap;
         }
+
+
+        .year-mark.zoomable {
+            cursor: zoom-in;
+        }
+
+
+        .year-mark.zoomable:hover {
+            text-decoration: underline;
+        }
+
 
         .year-mark::after {
             content: '';
@@ -324,13 +516,48 @@
             left: 50%;
             width: 1px;
             height: 8px;
-            background: #000;
+            background: var(--fg);
         }
+
 
         .lanes-container {
             position: relative;
             margin-top: 0.5rem;
+            cursor: crosshair;
         }
+
+
+        /* Drag-to-zoom selection */
+        .zoom-selection {
+            position: absolute;
+            bottom: 0;
+            background: var(--selection);
+            border-left: 1px solid var(--fg);
+            border-right: 1px solid var(--fg);
+            pointer-events: none;
+            z-index: 50;
+        }
+
+
+        .zoom-selection-label {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--invert-bg);
+            color: var(--invert-fg);
+            font-size: 0.6rem;
+            letter-spacing: 0.05em;
+            padding: 2px 6px;
+            white-space: nowrap;
+        }
+
+
+        body.is-dragging,
+        body.is-dragging * {
+            cursor: crosshair !important;
+        }
+
 
         /* Event Bars */
         .event-bar {
@@ -345,53 +572,92 @@
             border: 1px solid transparent;
         }
 
+
+        .event-bar.clip-left {
+            border-left: 1px dashed var(--clip-edge);
+        }
+
+
+        .event-bar.clip-right {
+            border-right: 1px dashed var(--clip-edge);
+            overflow: hidden;
+        }
+
+
         .event-bar::before {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: 2px;
             background: var(--event-color);
-            opacity: 0.8;
+            opacity: var(--bar-opacity);
             transition: opacity 0.2s;
         }
 
+
         .event-bar:hover::before {
-            opacity: 0.9;
+            opacity: var(--bar-opacity-hover);
         }
 
+
         .event-bar.active::before {
-            opacity: 1;
+            opacity: var(--bar-opacity-active);
         }
+
 
         .event-bar .bar-label {
             position: relative;
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #000;
+            color: var(--bar-text);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
+
+        /* Arrows on events that continue beyond the visible range */
+        .event-bar.clip-left .bar-label::before {
+            content: '‹ ';
+        }
+
+
+        .event-bar.clip-right::after {
+            content: '›';
+            position: relative;
+            margin-left: auto;
+            padding-left: 0.4em;
+            padding-right: 1px;
+            font-size: 0.7rem;
+            color: var(--bar-text);
+            flex-shrink: 0;
+        }
+
+
         /* Event Detail Popup */
         .event-detail {
             position: absolute;
             z-index: 100;
-            background: #fff;
-            border: 1px solid #000;
+            background: var(--surface);
+            border: 1px solid var(--fg);
             padding: 1rem;
             width: 280px;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s ease;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 20px var(--shadow);
+            cursor: default;
+            user-select: text;
+            -webkit-user-select: text;
         }
+
 
         .event-detail.visible {
             opacity: 1;
             pointer-events: auto;
         }
+
 
         .event-detail .detail-title {
             font-size: 0.7rem;
@@ -400,11 +666,18 @@
             margin-bottom: 0.3rem;
         }
 
+
+        .event-detail.expanded .detail-title {
+            padding-right: 7rem;
+        }
+
+
         .event-detail .detail-dates {
             font-size: 0.65rem;
             margin-bottom: 0.8rem;
             letter-spacing: 0.05em;
         }
+
 
         .event-detail .detail-image {
             width: 100%;
@@ -414,10 +687,11 @@
             filter: grayscale(30%);
         }
 
+
         .event-detail .detail-image-placeholder {
             width: 100%;
             height: 80px;
-            background: #f0efec;
+            background: var(--surface-alt);
             margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
@@ -427,6 +701,7 @@
             letter-spacing: 0.1em;
         }
 
+
         .event-detail .detail-notes {
             font-size: 0.7rem;
             line-height: 1.7;
@@ -435,12 +710,14 @@
             transition: max-height 0.3s ease, margin-top 0.3s ease;
         }
 
+
         .event-detail.expanded .detail-notes {
             max-height: 400px;
             margin-top: 0.5rem;
             padding-top: 0.5rem;
-            border-top: 1px solid #000;
+            border-top: 1px solid var(--fg);
         }
+
 
         .event-detail .expand-hint {
             font-size: 0.55rem;
@@ -450,25 +727,38 @@
             opacity: 0.5;
         }
 
+
         .event-detail.expanded .expand-hint {
             display: none;
         }
 
-        .event-detail .edit-btn {
+
+        .event-detail .edit-btn,
+        .event-detail .zoom-event-btn {
             display: none;
             position: absolute;
             top: 0.5rem;
-            right: 2.5rem;
             background: none;
             border: none;
             font-family: 'Courier New', monospace;
             font-size: 0.6rem;
-            color: #000;
+            color: var(--fg);
             cursor: pointer;
             padding: 0.2rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
         }
+
+
+        .event-detail .edit-btn {
+            right: 2.5rem;
+        }
+
+
+        .event-detail .zoom-event-btn {
+            right: 5.5rem;
+        }
+
 
         .event-detail .delete-btn {
             display: none;
@@ -478,16 +768,19 @@
             background: none;
             border: none;
             font-size: 0.8rem;
-            color: #000;
+            color: var(--fg);
             cursor: pointer;
             padding: 0.2rem;
             line-height: 1;
         }
 
+
         .event-detail.expanded .edit-btn,
+        .event-detail.expanded .zoom-event-btn,
         .event-detail.expanded .delete-btn {
             display: block;
         }
+
 
         .empty-state {
             text-align: center;
@@ -497,23 +790,31 @@
             letter-spacing: 0.2em;
         }
 
+
         .grid-line {
             position: absolute;
             top: 0;
             bottom: 0;
             width: 1px;
-            background: #000;
+            background: var(--fg);
             opacity: 0.15;
         }
+
+
+        .grid-line.major {
+            opacity: 0.35;
+        }
+
 
         .lane-guideline {
             position: absolute;
             left: 0;
             right: 0;
             height: 1px;
-            background: #000;
+            background: var(--fg);
             opacity: 0.15;
         }
+
 
         .empty-dashboard {
             display: none;
@@ -521,24 +822,29 @@
             padding: 6rem 2rem;
         }
 
+
         .empty-dashboard-text {
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.2em;
             margin-bottom: 1.5rem;
         }
-
-        :root {
-            --event-color: #7a8b7a;
-        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <h1>Timeline Notes</h1>
+        <div class="app-header">
+            <h1>Timeline Notes</h1>
+            <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+                <span class="theme-toggle-label">Dark</span>
+                <span class="theme-toggle-track"><span class="theme-toggle-knob"></span></span>
+            </button>
+        </div>
+
 
         <!-- Tabs -->
         <div class="tab-bar" id="tabBar"></div>
+
 
         <!-- New Tab Modal -->
         <div class="modal-overlay" id="newTabModal">
@@ -562,6 +868,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Add Event -->
         <div class="add-panel">
@@ -594,6 +901,7 @@
             </form>
         </div>
 
+
         <!-- Timeline -->
         <div class="timeline-container">
             <div class="timeline-scroll" id="timelineScroll">
@@ -602,15 +910,18 @@
             </div>
         </div>
 
+
         <div class="empty-dashboard" id="emptyDashboard">
             <p class="empty-dashboard-text">You don't have any timelines yet</p>
             <button class="add-toggle" id="emptyDashboardCreateBtn">+ Create Your First Timeline</button>
         </div>
 
+
         <div class="empty-state" id="emptyState">
             No events yet — add your first entry above
         </div>
     </div>
+
 
     <script>
         const COLORS = [
@@ -619,10 +930,64 @@
             '#9b7a6b', '#6b8b8b', '#8b6b6b', '#6b9b7a'
         ];
 
+
         const LANE_HEIGHT = 44;
         const LANE_GAP = 6;
         const STORAGE_KEY = 'timelineApp';
+        const THEME_KEY = 'timelineTheme';
         const AXIS_PADDING_LEFT = 30;
+
+
+        // Zoom constants
+        const DAY_MS = 86400000;
+        const MIN_VIEW_MS = 3 * DAY_MS;      // most zoomed-in view: 3 days
+        const MIN_BAR_WIDTH = 4;             // keep tiny events hoverable
+        const DOUBLE_CLICK_MS = 400;
+        const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+
+        // Axis tick options, from finest to coarsest. minPx = minimum spacing between ticks.
+        const TICK_STEPS = [
+            { unit: 'day',   n: 1,   minPx: 30 },
+            { unit: 'day',   n: 2,   minPx: 30 },
+            { unit: 'day',   n: 7,   minPx: 30 },
+            { unit: 'month', n: 1,   minPx: 42 },
+            { unit: 'month', n: 3,   minPx: 90 },
+            { unit: 'year',  n: 1,   minPx: 60 },
+            { unit: 'year',  n: 2,   minPx: 60 },
+            { unit: 'year',  n: 5,   minPx: 60 },
+            { unit: 'year',  n: 10,  minPx: 60 },
+            { unit: 'year',  n: 25,  minPx: 60 },
+            { unit: 'year',  n: 50,  minPx: 60 },
+            { unit: 'year',  n: 100, minPx: 60 }
+        ];
+        const UNIT_MS = { day: DAY_MS, month: 30.44 * DAY_MS, year: 365.25 * DAY_MS };
+
+
+        // ---------- Light / dark theme ----------
+        const themeToggle = document.getElementById('themeToggle');
+
+
+        function applyTheme(theme) {
+            document.documentElement.dataset.theme = theme;
+            themeToggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+            themeToggle.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+
+
+        themeToggle.addEventListener('click', () => {
+            const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            try {
+                localStorage.setItem(THEME_KEY, next);
+            } catch (e) {
+                console.error('Theme save error:', e);
+            }
+        });
+
+
+        applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+
 
         // Default data
         const defaultData = {
@@ -630,11 +995,14 @@
             tabs: []
         };
 
+
         // State
         let appData = loadAppData();
-        let activeEventId = null;
+        let activeEventId = null;   // event whose pop-up is pinned open (clicked)
         let detailEl = null;
         let editingEventId = null;
+        let dragState = null;       // set while drag-selecting a range to zoom into
+
 
         function loadAppData() {
             try {
@@ -652,6 +1020,7 @@
             return JSON.parse(JSON.stringify(defaultData));
         }
 
+
         function saveAppData() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
@@ -660,69 +1029,229 @@
             }
         }
 
+
         function hasTabs() {
             return appData.tabs && appData.tabs.length > 0;
         }
+
 
         function getActiveTab() {
             if (!hasTabs()) return null;
             return appData.tabs.find(t => t.id === appData.activeTab) || appData.tabs[0];
         }
 
+
         function getNextEventId(tab) {
             if (tab.events.length === 0) return 1;
             return Math.max(...tab.events.map(e => Number(e.id) || 0)) + 1;
         }
 
+
         function getTimelineWidth() {
             return Math.max(window.innerWidth - 100, 900);
         }
 
-        function dateToX(dateStr, tab) {
-            const d = new Date(dateStr);
-            const start = new Date(`${tab.yearStart}-01-01`);
-            const end = new Date(`${tab.yearEnd}-01-01`);
-            const ratio = (d - start) / (end - start);
-            const usableWidth = getTimelineWidth() - AXIS_PADDING_LEFT;
-            return ratio * usableWidth + AXIS_PADDING_LEFT;
-        }
 
         function formatDate(dateStr) {
             const [year, month, day] = dateStr.split('-');
-            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            return `${parseInt(day)} ${months[parseInt(month) - 1]} ${year}`;
+            return `${parseInt(day)} ${MONTHS[parseInt(month) - 1]} ${year}`;
         }
 
-        function eventsOverlap(a, b) {
-            return new Date(a.start) < new Date(b.end) && new Date(b.start) < new Date(a.end);
+
+        function formatMs(ms) {
+            const d = new Date(ms);
+            return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
         }
 
-        function assignLanes(evts) {
-            const sorted = [...evts].sort((a, b) => new Date(a.start) - new Date(b.start));
-            const lanes = [];
-            sorted.forEach(evt => {
-                let placed = false;
-                for (let i = 0; i < lanes.length; i++) {
-                    const last = lanes[i][lanes[i].length - 1];
-                    if (!eventsOverlap(evt, last)) {
-                        lanes[i].push(evt);
-                        evt.lane = i;
-                        placed = true;
-                        break;
-                    }
-                }
-                if (!placed) {
-                    evt.lane = lanes.length;
-                    lanes.push([evt]);
-                }
+
+        // ---------- View range (zoom) helpers ----------
+        // All times are UTC milliseconds. Event end dates are inclusive (a one-day event covers that whole day).
+
+
+        function eventRange(evt) {
+            const s = Date.parse(evt.start);
+            let e = Date.parse(evt.end) + DAY_MS;
+            if (isNaN(e) || e <= s) e = s + DAY_MS;
+            return { s, e };
+        }
+
+
+        function getFullRange(tab) {
+            return {
+                start: Date.UTC(tab.yearStart, 0, 1),
+                end: Date.UTC(tab.yearEnd, 0, 1)
+            };
+        }
+
+
+        function clampView(tab, start, end) {
+            const full = getFullRange(tab);
+            const fullSpan = full.end - full.start;
+            const span = Math.min(Math.max(end - start, MIN_VIEW_MS), fullSpan);
+            let s = (start + end) / 2 - span / 2;
+            s = Math.max(full.start, Math.min(s, full.end - span));
+            return { start: Math.round(s), end: Math.round(s + span) };
+        }
+
+
+        function getView(tab) {
+            if (tab.view && isFinite(tab.view.start) && isFinite(tab.view.end) && tab.view.end > tab.view.start) {
+                return clampView(tab, tab.view.start, tab.view.end);
+            }
+            return getFullRange(tab);
+        }
+
+
+        function isZoomed(tab) {
+            const v = getView(tab);
+            const f = getFullRange(tab);
+            return v.start > f.start || v.end < f.end;
+        }
+
+
+        function timeToX(t, view) {
+            const usable = getTimelineWidth() - AXIS_PADDING_LEFT;
+            return AXIS_PADDING_LEFT + (t - view.start) / (view.end - view.start) * usable;
+        }
+
+
+        function xToTime(x, view) {
+            const usable = getTimelineWidth() - AXIS_PADDING_LEFT;
+            return view.start + (x - AXIS_PADDING_LEFT) / usable * (view.end - view.start);
+        }
+
+
+        let renderQueued = false;
+        let saveTimer = null;
+
+
+        function queueRender() {
+            if (renderQueued) return;
+            renderQueued = true;
+            requestAnimationFrame(() => {
+                renderQueued = false;
+                renderTimeline();
             });
-            return lanes.length;
         }
+
+
+        function applyView(tab, start, end) {
+            if (!tab) return;
+            const full = getFullRange(tab);
+            const v = clampView(tab, start, end);
+            tab.view = (v.start <= full.start && v.end >= full.end) ? null : v;
+            hideDetail();
+            queueRender();
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(saveAppData, 250);
+        }
+
+
+        function resetView(tab) {
+            if (!tab) return;
+            const full = getFullRange(tab);
+            applyView(tab, full.start, full.end);
+        }
+
+
+        function zoomToEvent(evt) {
+            const tab = getActiveTab();
+            if (!tab) return;
+            const { s, e } = eventRange(evt);
+            const pad = Math.max((e - s) * 0.15, 2 * DAY_MS);
+            applyView(tab, s - pad, e + pad);
+        }
+
+
+        // ---------- Axis ticks ----------
+
+
+        function chooseStep(view) {
+            const pxPerMs = (getTimelineWidth() - AXIS_PADDING_LEFT) / (view.end - view.start);
+            for (const step of TICK_STEPS) {
+                if (step.n * UNIT_MS[step.unit] * pxPerMs >= step.minPx) return step;
+            }
+            return TICK_STEPS[TICK_STEPS.length - 1];
+        }
+
+
+        function advanceStep(t, step) {
+            const d = new Date(t);
+            if (step.unit === 'year') return Date.UTC(d.getUTCFullYear() + step.n, 0, 1);
+            if (step.unit === 'month') return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + step.n, 1);
+            return t + step.n * DAY_MS;
+        }
+
+
+        function generateTicks(view, step) {
+            const ticks = [];
+            const s = new Date(view.start);
+
+
+            if (step.unit === 'year') {
+                let y = s.getUTCFullYear();
+                if (Date.UTC(y, 0, 1) < view.start) y++;
+                y = Math.ceil(y / step.n) * step.n;
+                for (; Date.UTC(y, 0, 1) <= view.end; y += step.n) {
+                    ticks.push({ t: Date.UTC(y, 0, 1), label: String(y) });
+                }
+            } else if (step.unit === 'month') {
+                const y = s.getUTCFullYear();
+                let m = s.getUTCMonth();
+                if (Date.UTC(y, m, 1) < view.start) m++;
+                m = Math.ceil(m / step.n) * step.n;
+                for (;;) {
+                    const t = Date.UTC(y, m, 1);
+                    if (t > view.end) break;
+                    ticks.push({ t, label: MONTHS[new Date(t).getUTCMonth()] });
+                    m += step.n;
+                }
+            } else {
+                for (let t = Math.ceil(view.start / DAY_MS) * DAY_MS; t <= view.end; t += DAY_MS) {
+                    const d = new Date(t);
+                    const day = d.getUTCDate();
+                    if (step.n > 1) {
+                        if ((day - 1) % step.n !== 0) continue;
+                        const dim = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+                        if (day !== 1 && dim - day + 1 < step.n * 0.6) continue;
+                    }
+                    ticks.push({ t, label: String(day) });
+                }
+            }
+            return ticks;
+        }
+
+
+        // Upper axis row: years when showing months, months when showing days
+        function generateContext(view, step) {
+            if (step.unit === 'year') return [];
+            const unit = step.unit === 'month' ? 'year' : 'month';
+            const s = new Date(view.start);
+            let t = unit === 'year'
+                ? Date.UTC(s.getUTCFullYear(), 0, 1)
+                : Date.UTC(s.getUTCFullYear(), s.getUTCMonth(), 1);
+            const periods = [];
+            while (t < view.end) {
+                const d = new Date(t);
+                const next = unit === 'year'
+                    ? Date.UTC(d.getUTCFullYear() + 1, 0, 1)
+                    : Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
+                periods.push({
+                    start: t,
+                    end: next,
+                    label: unit === 'year' ? String(d.getUTCFullYear()) : `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`
+                });
+                t = next;
+            }
+            return periods;
+        }
+
 
         // Render tabs
         function renderTabs() {
             const bar = document.getElementById('tabBar');
             bar.innerHTML = '';
+
 
             if (!hasTabs()) {
                 bar.style.display = 'none';
@@ -730,10 +1259,12 @@
             }
             bar.style.display = 'flex';
 
+
             appData.tabs.forEach(tab => {
                 const btn = document.createElement('button');
                 btn.className = 'tab-btn' + (tab.id === appData.activeTab ? ' active' : '') + (tab.deletable ? ' deletable' : '');
                 btn.innerHTML = `${tab.title}${tab.deletable ? '<span class="tab-close">×</span>' : ''}`;
+
 
                 btn.addEventListener('click', (e) => {
                     if (e.target.classList.contains('tab-close')) {
@@ -743,8 +1274,10 @@
                     switchTab(tab.id);
                 });
 
+
                 bar.appendChild(btn);
             });
+
 
             const addBtn = document.createElement('button');
             addBtn.className = 'tab-add-btn';
@@ -753,6 +1286,7 @@
             addBtn.addEventListener('click', openNewTabModal);
             bar.appendChild(addBtn);
         }
+
 
         function switchTab(tabId) {
             hideDetail();
@@ -763,10 +1297,12 @@
             renderTimeline();
         }
 
+
         function deleteTab(tabId) {
             const tab = appData.tabs.find(t => t.id === tabId);
             if (!tab || !tab.deletable) return;
             if (!confirm(`Delete "${tab.title}" timeline and all its events?`)) return;
+
 
             appData.tabs = appData.tabs.filter(t => t.id !== tabId);
             if (appData.activeTab === tabId) {
@@ -777,6 +1313,7 @@
             renderTimeline();
         }
 
+
         // New Tab Modal
         function openNewTabModal() {
             document.getElementById('newTabModal').classList.add('visible');
@@ -786,19 +1323,24 @@
             setTimeout(() => document.getElementById('newTabTitle').focus(), 100);
         }
 
+
         document.getElementById('newTabCancel').addEventListener('click', () => {
             document.getElementById('newTabModal').classList.remove('visible');
         });
 
+
         document.getElementById('emptyDashboardCreateBtn').addEventListener('click', openNewTabModal);
+
 
         document.getElementById('newTabConfirm').addEventListener('click', () => {
             const title = document.getElementById('newTabTitle').value.trim();
             const yStart = parseInt(document.getElementById('newTabStart').value) || 2000;
             const yEnd = parseInt(document.getElementById('newTabEnd').value) + 1 || (yStart + 10);
 
+
             if (!title) { alert('Please enter a title.'); return; }
             if (yEnd <= yStart) { alert('End year must be after start year.'); return; }
+
 
             const newTab = {
                 id: 'custom-' + Date.now(),
@@ -809,6 +1351,7 @@
                 events: []
             };
 
+
             appData.tabs.push(newTab);
             appData.activeTab = newTab.id;
             saveAppData();
@@ -817,39 +1360,104 @@
             renderTimeline();
         });
 
+
         document.getElementById('newTabModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 document.getElementById('newTabModal').classList.remove('visible');
             }
         });
 
-        // Timeline rendering
-        function renderAxis(tab) {
+
+        // ---------- Timeline rendering ----------
+
+
+        function renderAxis(view, step, ticks, context) {
             const axis = document.getElementById('timelineAxis');
             axis.innerHTML = '';
             const width = getTimelineWidth();
             axis.style.width = width + 'px';
 
-            const range = tab.yearEnd - tab.yearStart;
-            let step = 1;
-            if (range > 30) step = 5;
-            else if (range > 15) step = 2;
 
-            for (let year = tab.yearStart; year <= (tab.yearEnd - 1); year += step) {
+            // Context row (years / months above the tick labels)
+            context.forEach(p => {
+                const left = Math.max(timeToX(p.start, view), AXIS_PADDING_LEFT);
+                const right = Math.min(timeToX(p.end, view), width);
+                if (right - left < 40) return;
+                const el = document.createElement('div');
+                el.className = 'axis-context';
+                el.style.left = left + 'px';
+                el.style.width = (right - left) + 'px';
+                el.textContent = p.label;
+                el.dataset.zoomStart = p.start;
+                el.dataset.zoomEnd = p.end;
+                el.title = `Zoom to ${p.label}`;
+                axis.appendChild(el);
+            });
+
+
+            // Tick labels
+            ticks.forEach(tk => {
+                if (tk.t >= view.end) return;
+                const x = timeToX(tk.t, view);
+                if (x > width - 12) return;
                 const mark = document.createElement('div');
                 mark.className = 'year-mark';
-                const x = dateToX(`${year}-01-01`, tab);
                 mark.style.left = x + 'px';
-                mark.textContent = year;
+                mark.textContent = tk.label;
+                if (step.unit !== 'day') {
+                    const next = advanceStep(tk.t, step);
+                    mark.classList.add('zoomable');
+                    mark.dataset.zoomStart = tk.t;
+                    mark.dataset.zoomEnd = next;
+                    mark.title = `Zoom to ${formatMs(tk.t)} — ${formatMs(next - 1)}`;
+                }
                 axis.appendChild(mark);
-            }
+            });
         }
+
+
+        // Positions visible events for the current view and packs them into lanes
+        function layoutEvents(tab, view) {
+            const width = getTimelineWidth();
+            const items = [];
+
+
+            tab.events.forEach(evt => {
+                const { s, e } = eventRange(evt);
+                if (isNaN(s) || e <= view.start || s >= view.end) return;
+                let left = Math.max(timeToX(s, view), AXIS_PADDING_LEFT);
+                const right = Math.min(timeToX(e, view), width);
+                const w = Math.max(right - left, MIN_BAR_WIDTH);
+                if (left + w > width) left = width - w;
+                items.push({
+                    evt, left, width: w,
+                    clipLeft: s < view.start,
+                    clipRight: e > view.end
+                });
+            });
+
+
+            items.sort((a, b) => a.left - b.left || b.width - a.width);
+            const laneEnds = [];
+            items.forEach(item => {
+                let lane = laneEnds.findIndex(end => item.left >= end - 0.5);
+                if (lane === -1) {
+                    lane = laneEnds.length;
+                    laneEnds.push(0);
+                }
+                laneEnds[lane] = item.left + item.width;
+                item.lane = lane;
+            });
+            return items;
+        }
+
 
         function renderTimeline() {
             const emptyDashboard = document.getElementById('emptyDashboard');
             const addPanel = document.querySelector('.add-panel');
             const timelineContainer = document.querySelector('.timeline-container');
             const emptyState = document.getElementById('emptyState');
+
 
             if (!hasTabs()) {
                 emptyDashboard.style.display = 'block';
@@ -861,27 +1469,52 @@
             emptyDashboard.style.display = 'none';
             addPanel.style.display = 'block';
             timelineContainer.style.display = 'block';
+
+
             const tab = getActiveTab();
+            const view = getView(tab);
             const container = document.getElementById('lanesContainer');
             const scroll = document.getElementById('timelineScroll');
 
+
+            // Rebuilding the lanes removes any open pop-up along with the bars
             container.innerHTML = '';
+            detailEl = null;
+            activeEventId = null;
+
+
             const width = getTimelineWidth();
             scroll.style.width = width + 'px';
 
-            renderAxis(tab);
+
+            const step = chooseStep(view);
+            const ticks = generateTicks(view, step);
+            const context = generateContext(view, step);
+            const majorTimes = new Set(context.map(p => p.start));
+
+
+            renderAxis(view, step, ticks, context);
+
+
+            const items = layoutEvents(tab, view);
+
+
+            const totalLanes = items.reduce((m, i) => Math.max(m, i.lane + 1), 0);
+            container.style.height = (totalLanes > 0
+                ? totalLanes * (LANE_HEIGHT + LANE_GAP) + 20
+                : 100) + 'px';
+
 
             if (tab.events.length === 0) {
+                emptyState.textContent = 'No events yet — add your first entry above';
                 emptyState.style.display = 'block';
-                container.style.height = '100px';
-                return;
+            } else if (items.length === 0) {
+                emptyState.textContent = 'No events in this period — double-click the timeline to reset the view';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
             }
 
-            emptyState.style.display = 'none';
-
-            const totalLanes = assignLanes(tab.events);
-            const totalHeight = totalLanes * (LANE_HEIGHT + LANE_GAP) + 20;
-            container.style.height = totalHeight + 'px';
 
             // Lane guidelines
             for (let i = 0; i < totalLanes; i++) {
@@ -891,40 +1524,48 @@
                 container.appendChild(guide);
             }
 
-            // Grid lines
-            const range = tab.yearEnd - tab.yearStart;
-            let step = 1;
-            if (range > 30) step = 5;
-            else if (range > 15) step = 2;
 
-            for (let year = tab.yearStart; year <= tab.yearEnd; year += step) {
+            // Grid lines
+            ticks.forEach(tk => {
                 const gl = document.createElement('div');
-                gl.className = 'grid-line';
-                gl.style.left = dateToX(`${year}-01-01`, tab) + 'px';
+                gl.className = 'grid-line' + (majorTimes.has(tk.t) ? ' major' : '');
+                gl.style.left = timeToX(tk.t, view) + 'px';
                 container.appendChild(gl);
-            }
+            });
+
 
             // Event bars
-            tab.events.forEach(evt => {
+            items.forEach(item => {
+                const evt = item.evt;
                 const bar = document.createElement('div');
-                bar.className = 'event-bar';
+                bar.className = 'event-bar' +
+                    (item.clipLeft ? ' clip-left' : '') +
+                    (item.clipRight ? ' clip-right' : '');
                 bar.dataset.id = evt.id;
                 bar.style.setProperty('--event-color', evt.color);
 
-                const startX = dateToX(evt.start, tab);
-                const endX = dateToX(evt.end, tab);
-                const barWidth = Math.max(endX - startX, 2);
 
-                bar.style.left = startX + 'px';
-                bar.style.width = barWidth + 'px';
-                bar.style.top = (evt.lane * (LANE_HEIGHT + LANE_GAP)) + 'px';
+                bar.style.left = item.left + 'px';
+                bar.style.width = item.width + 'px';
+                bar.style.top = (item.lane * (LANE_HEIGHT + LANE_GAP)) + 'px';
+
 
                 const label = document.createElement('span');
                 label.className = 'bar-label';
                 label.textContent = evt.title;
                 bar.appendChild(label);
 
-                bar.addEventListener('mouseenter', () => showDetail(evt, bar, tab));
+
+                bar.addEventListener('mouseenter', () => {
+                    // No hover pop-ups while drag-selecting a range
+                    if (dragState) return;
+                    // A clicked pop-up stays pinned; other events don't replace it on hover
+                    if (activeEventId !== null) {
+                        if (activeEventId === evt.id) clearTimeout(window._hideTimer);
+                        return;
+                    }
+                    showDetail(evt, bar, tab);
+                });
                 bar.addEventListener('mouseleave', () => {
                     window._hideTimer = setTimeout(() => {
                         if (activeEventId !== evt.id) hideDetail(evt.id);
@@ -934,27 +1575,38 @@
                     e.stopPropagation();
                     toggleExpand(evt, bar);
                 });
+                bar.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    zoomToEvent(evt);
+                });
+
 
                 container.appendChild(bar);
             });
         }
 
+
         function showDetail(evt, barEl, tab) {
             clearTimeout(window._hideTimer);
             if (detailEl) detailEl.remove();
+
 
             const container = document.getElementById('lanesContainer');
             detailEl = document.createElement('div');
             detailEl.className = 'event-detail';
             detailEl.dataset.eventId = evt.id;
 
+
             let imageHtml = evt.image
                 ? `<img class="detail-image" src="${evt.image}" alt="${evt.title}" onerror="this.outerHTML='<div class=\\'detail-image-placeholder\\'>image unavailable</div>'">`
                 : `<div class="detail-image-placeholder">no image</div>`;
 
+
             const notesHtml = evt.notes ? `<div class="detail-notes">${evt.notes}</div>` : '';
 
+
             detailEl.innerHTML = `
+                <button class="zoom-event-btn" data-id="${evt.id}" title="Zoom the timeline to this event">ZOOM</button>
                 <button class="edit-btn" data-id="${evt.id}">EDIT</button>
                 <button class="delete-btn" data-id="${evt.id}">×</button>
                 <div class="detail-title">${evt.title}</div>
@@ -964,29 +1616,42 @@
                 ${notesHtml}
             `;
 
+
             let left = barEl.offsetLeft;
             let top = barEl.offsetTop + LANE_HEIGHT + 8;
             if (left + 280 > getTimelineWidth()) left = getTimelineWidth() - 290;
             if (left < 0) left = 0;
 
+
             detailEl.style.left = left + 'px';
             detailEl.style.top = top + 'px';
             container.appendChild(detailEl);
 
+
+            const el = detailEl;
             requestAnimationFrame(() => {
-                detailEl.classList.add('visible');
-                if (activeEventId === evt.id) detailEl.classList.add('expanded');
+                el.classList.add('visible');
+                if (activeEventId === evt.id) el.classList.add('expanded');
             });
+
+
+            detailEl.querySelector('.zoom-event-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                zoomToEvent(evt);
+            });
+
 
             detailEl.querySelector('.edit-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 openEditForm(evt);
             });
 
+
             detailEl.querySelector('.delete-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 hideDetail();
             });
+
 
             detailEl.addEventListener('mouseenter', () => clearTimeout(window._hideTimer));
             detailEl.addEventListener('mouseleave', () => {
@@ -996,16 +1661,20 @@
             });
             detailEl.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (!e.target.classList.contains('delete-btn') && !e.target.classList.contains('edit-btn')) {
+                if (!e.target.classList.contains('delete-btn') &&
+                    !e.target.classList.contains('edit-btn') &&
+                    !e.target.classList.contains('zoom-event-btn')) {
                     toggleExpand(evt, barEl);
                 }
             });
         }
 
+
         function hideDetail(forId) {
             if (forId !== undefined && (!detailEl || String(detailEl.dataset.eventId) !== String(forId))) {
                 return;
             }
+
 
             if (detailEl) {
                 detailEl.classList.remove('visible');
@@ -1016,21 +1685,25 @@
             document.querySelectorAll('.event-bar.active').forEach(el => el.classList.remove('active'));
         }
 
+
         function toggleExpand(evt, barEl) {
             if (activeEventId === evt.id) {
+                // Un-pin: the pop-up goes back to behaving like a hover pop-up
                 activeEventId = null;
                 barEl.classList.remove('active');
                 if (detailEl) detailEl.classList.remove('expanded');
             } else {
+                // Pin this event's pop-up open (replacing any other pinned pop-up)
                 activeEventId = evt.id;
                 document.querySelectorAll('.event-bar.active').forEach(el => el.classList.remove('active'));
                 barEl.classList.add('active');
-                if (!detailEl) {
+                if (!detailEl || String(detailEl.dataset.eventId) !== String(evt.id)) {
                     showDetail(evt, barEl, getActiveTab());
                 }
                 detailEl.classList.add('expanded');
             }
         }
+
 
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.event-bar') && !e.target.closest('.event-detail')) {
@@ -1038,11 +1711,181 @@
             }
         });
 
-        // Form
+
+        // ---------- Mouse / trackpad interactions on the timeline ----------
+        //   drag across axis or empty space  -> zoom to the highlighted range
+        //   click a year / month label       -> zoom to that period
+        //   double-click empty space         -> reset to the full timeline
+        //   ctrl/cmd + scroll (or pinch)     -> zoom around the cursor
+        //   horizontal scroll while zoomed   -> move earlier / later
+
+
+        const scrollEl = document.getElementById('timelineScroll');
+        let selectionEl = null;
+        let lastEmptyClick = null;
+
+
+        function relX(e) {
+            return e.clientX - scrollEl.getBoundingClientRect().left;
+        }
+
+
+        function clampX(x) {
+            return Math.min(Math.max(x, AXIS_PADDING_LEFT), getTimelineWidth());
+        }
+
+
+        function floorDay(t) { return Math.floor(t / DAY_MS) * DAY_MS; }
+        function ceilDay(t) { return Math.ceil(t / DAY_MS) * DAY_MS; }
+
+
+        function selectionRange(x1, x2, view) {
+            const a = floorDay(xToTime(Math.min(x1, x2), view));
+            let b = ceilDay(xToTime(Math.max(x1, x2), view));
+            if (b <= a) b = a + DAY_MS;
+            return { start: a, end: b };
+        }
+
+
+        function endDrag() {
+            dragState = null;
+            if (selectionEl) {
+                selectionEl.remove();
+                selectionEl = null;
+            }
+            document.body.classList.remove('is-dragging');
+        }
+
+
+        scrollEl.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0 || !hasTabs()) return;
+            if (e.target.closest('.event-bar, .event-detail')) return;
+            if (!e.target.closest('#timelineAxis, #lanesContainer')) return;
+
+
+            e.preventDefault();
+            if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+
+
+            // Dismiss a lingering hover pop-up right away (a pinned one is left alone)
+            clearTimeout(window._hideTimer);
+            if (activeEventId === null) hideDetail();
+
+
+            const tab = getActiveTab();
+            dragState = {
+                tab,
+                view: getView(tab),
+                startX: clampX(relX(e)),
+                target: e.target,
+                moved: false
+            };
+            document.body.classList.add('is-dragging');
+        });
+
+
+        window.addEventListener('pointermove', (e) => {
+            if (!dragState) return;
+
+
+            const x = clampX(relX(e));
+            if (!dragState.moved && Math.abs(x - dragState.startX) < 5) return;
+            dragState.moved = true;
+
+
+            if (!selectionEl) {
+                selectionEl = document.createElement('div');
+                selectionEl.className = 'zoom-selection';
+                selectionEl.innerHTML = '<div class="zoom-selection-label"></div>';
+                scrollEl.appendChild(selectionEl);
+            }
+            const axis = document.getElementById('timelineAxis');
+            selectionEl.style.top = axis.offsetTop + 'px';
+            selectionEl.style.left = Math.min(x, dragState.startX) + 'px';
+            selectionEl.style.width = Math.abs(x - dragState.startX) + 'px';
+
+
+            const r = selectionRange(dragState.startX, x, dragState.view);
+            selectionEl.firstChild.textContent = `${formatMs(r.start)} — ${formatMs(r.end - 1)}`;
+        });
+
+
+        window.addEventListener('pointerup', (e) => {
+            if (!dragState) return;
+
+
+            const st = dragState;
+            endDrag();
+
+
+            // Drag: zoom to the highlighted range
+            if (st.moved) {
+                lastEmptyClick = null;
+                const r = selectionRange(st.startX, clampX(relX(e)), st.view);
+                applyView(st.tab, r.start, r.end);
+                return;
+            }
+
+
+            // Click on a year / month label: zoom into that period
+            const z = st.target.closest('[data-zoom-start]');
+            if (z) {
+                lastEmptyClick = null;
+                applyView(st.tab, Number(z.dataset.zoomStart), Number(z.dataset.zoomEnd));
+                return;
+            }
+
+
+            // Click on empty space: a second click close by (in time and position) resets the zoom
+            const isDouble = lastEmptyClick &&
+                e.timeStamp - lastEmptyClick.time < DOUBLE_CLICK_MS &&
+                Math.abs(e.clientX - lastEmptyClick.x) < 10 &&
+                Math.abs(e.clientY - lastEmptyClick.y) < 10;
+
+
+            if (isDouble) {
+                lastEmptyClick = null;
+                resetView(st.tab);
+            } else {
+                lastEmptyClick = { time: e.timeStamp, x: e.clientX, y: e.clientY };
+            }
+        });
+
+
+        window.addEventListener('pointercancel', endDrag);
+
+
+        scrollEl.addEventListener('wheel', (e) => {
+            if (!hasTabs()) return;
+            const tab = getActiveTab();
+            const view = getView(tab);
+            const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? 400 : 1);
+
+
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                const factor = Math.min(Math.max(Math.exp(e.deltaY * unit * 0.0025), 0.5), 2);
+                const t = xToTime(clampX(relX(e)), view);
+                applyView(tab, t - (t - view.start) * factor, t + (view.end - t) * factor);
+                return;
+            }
+
+
+            if (isZoomed(tab) && (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY))) {
+                e.preventDefault();
+                const dpx = (e.deltaX || e.deltaY) * unit;
+                const msPerPx = (view.end - view.start) / (getTimelineWidth() - AXIS_PADDING_LEFT);
+                applyView(tab, view.start + dpx * msPerPx, view.end + dpx * msPerPx);
+            }
+        }, { passive: false });
+
+
+        // ---------- Form ----------
         const addToggle = document.getElementById('addToggle');
         const addForm = document.getElementById('addForm');
         const deleteEventBtn = document.getElementById('deleteEventBtn');
         const formSubmitBtn = document.getElementById('formSubmitBtn');
+
 
         function closeForm() {
             addForm.classList.remove('visible');
@@ -1051,6 +1894,7 @@
             deleteEventBtn.classList.remove('visible');
             addForm.reset();
         }
+
 
         function openEditForm(evt) {
             editingEventId = evt.id;
@@ -1066,6 +1910,7 @@
             addForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+
         addToggle.addEventListener('click', () => {
             if (addForm.classList.contains('visible')) {
                 closeForm();
@@ -1077,6 +1922,7 @@
             }
         });
 
+
         addForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const tab = getActiveTab();
@@ -1086,8 +1932,10 @@
             const end = document.getElementById('eventEnd').value;
             const notes = document.getElementById('eventNotes').value.trim();
 
+
             if (!title || !start || !end) return;
             if (new Date(end) < new Date(start)) { alert('End date must be after start date.'); return; }
+
 
             if (editingEventId !== null) {
                 const evt = tab.events.find(ev => ev.id === editingEventId);
@@ -1103,10 +1951,12 @@
                 });
             }
 
+
             saveAppData();
             closeForm();
             renderTimeline();
         });
+
 
         deleteEventBtn.addEventListener('click', () => {
             if (editingEventId === null) return;
@@ -1115,14 +1965,17 @@
             if (!evt) return;
             if (!confirm(`Delete "${evt.title}"?`)) return;
 
+
             tab.events = tab.events.filter(ev => ev.id !== editingEventId);
             saveAppData();
             closeForm();
             renderTimeline();
         });
 
+
         // Resize handler
         window.addEventListener('resize', () => { hideDetail(); renderTimeline(); });
+
 
         // Initial render
         renderTabs();
