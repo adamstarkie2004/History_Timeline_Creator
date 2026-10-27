@@ -41,6 +41,7 @@
             --bar-opacity-hover: 0.9;
             --bar-opacity-active: 1;
             --event-color: #7a8b7a;
+            --uncategorised-color: #8e8c87;
         }
 
         :root[data-theme="dark"] {
@@ -60,6 +61,7 @@
             --bar-opacity: 0.55;
             --bar-opacity-hover: 0.68;
             --bar-opacity-active: 0.8;
+            --uncategorised-color: #8a8884;
         }
 
         body {
@@ -480,9 +482,7 @@
         }
 
         .cat-swatch.none {
-            background: none;
-            border: 1px dashed var(--fg);
-            opacity: 0.6;
+            background: var(--uncategorised-color);
         }
 
         .filter-menu-actions {
@@ -558,7 +558,25 @@
         }
 
         .add-form select {
+            -webkit-appearance: none;
+            appearance: none;
             cursor: pointer;
+            border-radius: 0;
+            padding-right: 1.4rem;
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(45deg, transparent 50%, var(--fg) 50%),
+                linear-gradient(135deg, var(--fg) 50%, transparent 50%);
+            background-position:
+                calc(100% - 9px) center,
+                calc(100% - 4px) center;
+            background-size: 5px 5px, 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        .add-form select option {
+            background-color: var(--surface);
+            color: var(--fg);
         }
 
         .add-form input::placeholder,
@@ -1247,7 +1265,7 @@
 
         function getEventColor(tab, evt) {
             const cat = getCategory(tab, evt.categoryId);
-            return (cat && cat.color) || evt.color || COLORS[0];
+            return cat ? cat.color : 'var(--uncategorised-color)';
         }
 
         function addCategory(tab, name, color) {
@@ -2303,8 +2321,7 @@
             } else {
                 tab.events.push({
                     id: getNextEventId(tab),
-                    title, start, end, image, notes, categoryId,
-                    color: COLORS[(tab.events.length) % COLORS.length]
+                    title, start, end, image, notes, categoryId
                 });
             }
 
