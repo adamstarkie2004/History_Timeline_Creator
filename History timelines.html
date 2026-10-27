@@ -22,7 +22,6 @@
             box-sizing: border-box;
         }
 
-
         /* Theme colours */
         :root {
             color-scheme: light;
@@ -44,7 +43,6 @@
             --event-color: #7a8b7a;
         }
 
-
         :root[data-theme="dark"] {
             color-scheme: dark;
             --bg: #141413;
@@ -64,7 +62,6 @@
             --bar-opacity-active: 0.8;
         }
 
-
         body {
             font-family: 'Courier New', monospace;
             background: var(--bg);
@@ -74,7 +71,6 @@
             transition: background-color 0.2s, color 0.2s;
         }
 
-
         .app-header {
             display: flex;
             align-items: center;
@@ -83,7 +79,6 @@
             margin-bottom: 0.5rem;
         }
 
-
         h1 {
             font-size: 1.3rem;
             font-weight: 500;
@@ -91,7 +86,6 @@
             letter-spacing: 0.3em;
             color: var(--fg);
         }
-
 
         /* Light / dark toggle */
         .theme-toggle {
@@ -112,11 +106,9 @@
             transition: opacity 0.2s;
         }
 
-
         .theme-toggle:hover {
             opacity: 1;
         }
-
 
         .theme-toggle-track {
             position: relative;
@@ -125,7 +117,6 @@
             border: 1px solid var(--fg);
             border-radius: 2px;
         }
-
 
         .theme-toggle-knob {
             position: absolute;
@@ -138,17 +129,14 @@
             transition: transform 0.2s;
         }
 
-
         :root[data-theme="dark"] .theme-toggle-knob {
             transform: translateX(16px);
         }
-
 
         .app-container {
             max-width: 1400px;
             margin: 0 auto;
         }
-
 
         /* Tab System */
         .tab-bar {
@@ -159,7 +147,6 @@
             border-bottom: 1px solid var(--fg);
             padding-bottom: 0;
         }
-
 
         .tab-btn {
             font-family: 'Courier New', monospace;
@@ -179,17 +166,14 @@
             white-space: nowrap;
         }
 
-
         .tab-btn:hover {
             opacity: 0.7;
         }
-
 
         .tab-btn.active {
             opacity: 1;
             border-bottom-color: var(--fg);
         }
-
 
         .tab-btn .tab-close {
             display: none;
@@ -199,16 +183,13 @@
             cursor: pointer;
         }
 
-
         .tab-btn.deletable .tab-close {
             display: inline;
         }
 
-
         .tab-btn .tab-close:hover {
             opacity: 1;
         }
-
 
         .tab-add-btn {
             font-family: 'Courier New', monospace;
@@ -222,13 +203,11 @@
             transition: opacity 0.2s;
         }
 
-
         .tab-add-btn:hover {
             opacity: 1;
         }
 
-
-        /* New Tab Modal */
+        /* Modals */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -239,11 +218,9 @@
             justify-content: center;
         }
 
-
         .modal-overlay.visible {
             display: flex;
         }
-
 
         .modal-box {
             background: var(--surface);
@@ -253,14 +230,12 @@
             max-width: 90vw;
         }
 
-
         .modal-box h2 {
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.2em;
             margin-bottom: 1.5rem;
         }
-
 
         .modal-box label {
             font-size: 0.65rem;
@@ -271,7 +246,6 @@
             gap: 0.3rem;
             margin-bottom: 1rem;
         }
-
 
         .modal-box input {
             font-family: 'Courier New', monospace;
@@ -284,13 +258,11 @@
             outline: none;
         }
 
-
         .modal-actions {
             display: flex;
             gap: 0.75rem;
             margin-top: 1.5rem;
         }
-
 
         .modal-actions button {
             font-family: 'Courier New', monospace;
@@ -301,13 +273,11 @@
             cursor: pointer;
         }
 
-
         .modal-actions .btn-primary {
             background: var(--invert-bg);
             color: var(--invert-fg);
             border: none;
         }
-
 
         .modal-actions .btn-secondary {
             background: none;
@@ -315,6 +285,98 @@
             color: var(--fg);
         }
 
+        /* Category manager modal */
+        .category-modal-box {
+            width: 420px;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            max-height: 40vh;
+            overflow-y: auto;
+            margin-bottom: 1.25rem;
+        }
+
+        .category-row,
+        .category-add {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .category-row input[type="text"],
+        .category-add input[type="text"] {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modal-box input[type="color"] {
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border: 1px solid var(--fg);
+            border-radius: 2px;
+            background: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .modal-box input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .modal-box input[type="color"]::-webkit-color-swatch {
+            border: none;
+        }
+
+        .category-count {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+        }
+
+        .category-delete {
+            background: none;
+            border: none;
+            color: var(--fg);
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 0.2rem 0.3rem;
+            line-height: 1;
+        }
+
+        .category-delete:hover {
+            opacity: 1;
+        }
+
+        .category-empty {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            padding: 0.5rem 0;
+        }
+
+        .category-add {
+            padding-top: 1rem;
+            border-top: 1px solid var(--rule-soft);
+        }
+
+        .category-add button {
+            font-family: 'Courier New', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            padding: 0.5rem 0.9rem;
+            background: var(--invert-bg);
+            color: var(--invert-fg);
+            border: none;
+            cursor: pointer;
+        }
 
         /* Add Event Panel */
         .add-panel {
@@ -323,6 +385,20 @@
             padding-bottom: 2rem;
         }
 
+        .add-panel-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .panel-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-left: auto;
+        }
 
         .add-toggle {
             font-family: 'Courier New', monospace;
@@ -337,6 +413,110 @@
             transition: all 0.2s;
         }
 
+        .panel-controls .add-toggle {
+            font-size: 0.65rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .panel-controls .add-toggle.filter-active {
+            background: var(--invert-bg);
+            color: var(--invert-fg);
+        }
+
+        /* Filter dropdown */
+        .filter-wrap {
+            position: relative;
+        }
+
+        .filter-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--fg);
+            padding: 0.75rem 1rem;
+            min-width: 230px;
+            z-index: 200;
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .filter-menu.visible {
+            display: block;
+        }
+
+        .filter-menu-title {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.5;
+            margin-bottom: 0.4rem;
+        }
+
+        .filter-menu label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.3rem 0;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-menu input[type="checkbox"] {
+            accent-color: var(--fg);
+            cursor: pointer;
+        }
+
+        .cat-swatch {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            background: var(--event-color);
+        }
+
+        .cat-swatch.none {
+            background: none;
+            border: 1px dashed var(--fg);
+            opacity: 0.6;
+        }
+
+        .filter-menu-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--rule-soft);
+        }
+
+        .filter-menu-actions button {
+            font-family: 'Courier New', monospace;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: none;
+            border: none;
+            color: var(--fg);
+            cursor: pointer;
+            padding: 0.2rem 0;
+            opacity: 0.6;
+        }
+
+        .filter-menu-actions button:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .filter-menu-hint {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            letter-spacing: 0.05em;
+            padding: 0.3rem 0;
+        }
 
         .add-form {
             display: none;
@@ -346,11 +526,9 @@
             max-width: 600px;
         }
 
-
         .add-form.visible {
             display: grid;
         }
-
 
         .add-form label {
             font-size: 0.65rem;
@@ -362,14 +540,13 @@
             gap: 0.3rem;
         }
 
-
         .add-form label.full-width {
             grid-column: 1 / -1;
         }
 
-
         .add-form input,
-        .add-form textarea {
+        .add-form textarea,
+        .add-form select {
             font-family: 'Courier New', monospace;
             font-size: 0.8rem;
             border: none;
@@ -380,6 +557,9 @@
             outline: none;
         }
 
+        .add-form select {
+            cursor: pointer;
+        }
 
         .add-form input::placeholder,
         .add-form textarea::placeholder,
@@ -388,12 +568,10 @@
             opacity: 0.5;
         }
 
-
         .add-form textarea {
             resize: vertical;
             min-height: 60px;
         }
-
 
         .form-actions {
             grid-column: 1 / -1;
@@ -401,7 +579,6 @@
             gap: 0.75rem;
             align-items: center;
         }
-
 
         .form-actions button {
             font-family: 'Courier New', monospace;
@@ -413,13 +590,11 @@
             transition: background 0.2s;
         }
 
-
         .add-form button[type="submit"] {
             background: var(--invert-bg);
             color: var(--invert-fg);
             border: none;
         }
-
 
         .delete-event-form-btn {
             display: none;
@@ -428,17 +603,14 @@
             border: 1px solid #a33;
         }
 
-
         .delete-event-form-btn.visible {
             display: block;
         }
-
 
         .delete-event-form-btn:hover {
             background: #7f2222;
             border-color: #7f2222;
         }
-
 
         /* Timeline */
         .timeline-container {
@@ -448,7 +620,6 @@
             min-height: 60vh;
         }
 
-
         .timeline-scroll {
             position: relative;
             min-width: 100%;
@@ -457,7 +628,6 @@
             -webkit-user-select: none;
         }
 
-
         .timeline-axis {
             position: relative;
             height: 46px;
@@ -465,7 +635,6 @@
             cursor: crosshair;
             touch-action: none;
         }
-
 
         .axis-context {
             position: absolute;
@@ -482,11 +651,9 @@
             cursor: zoom-in;
         }
 
-
         .axis-context:hover {
             text-decoration: underline;
         }
-
 
         .year-mark {
             position: absolute;
@@ -498,16 +665,13 @@
             white-space: nowrap;
         }
 
-
         .year-mark.zoomable {
             cursor: zoom-in;
         }
 
-
         .year-mark.zoomable:hover {
             text-decoration: underline;
         }
-
 
         .year-mark::after {
             content: '';
@@ -519,13 +683,11 @@
             background: var(--fg);
         }
 
-
         .lanes-container {
             position: relative;
             margin-top: 0.5rem;
             cursor: crosshair;
         }
-
 
         /* Drag-to-zoom selection */
         .zoom-selection {
@@ -537,7 +699,6 @@
             pointer-events: none;
             z-index: 50;
         }
-
 
         .zoom-selection-label {
             position: absolute;
@@ -552,12 +713,10 @@
             white-space: nowrap;
         }
 
-
         body.is-dragging,
         body.is-dragging * {
             cursor: crosshair !important;
         }
-
 
         /* Event Bars */
         .event-bar {
@@ -572,17 +731,14 @@
             border: 1px solid transparent;
         }
 
-
         .event-bar.clip-left {
             border-left: 1px dashed var(--clip-edge);
         }
-
 
         .event-bar.clip-right {
             border-right: 1px dashed var(--clip-edge);
             overflow: hidden;
         }
-
 
         .event-bar::before {
             content: '';
@@ -594,16 +750,13 @@
             transition: opacity 0.2s;
         }
 
-
         .event-bar:hover::before {
             opacity: var(--bar-opacity-hover);
         }
 
-
         .event-bar.active::before {
             opacity: var(--bar-opacity-active);
         }
-
 
         .event-bar .bar-label {
             position: relative;
@@ -616,12 +769,10 @@
             text-overflow: ellipsis;
         }
 
-
         /* Arrows on events that continue beyond the visible range */
         .event-bar.clip-left .bar-label::before {
             content: '‹ ';
         }
-
 
         .event-bar.clip-right::after {
             content: '›';
@@ -633,7 +784,6 @@
             color: var(--bar-text);
             flex-shrink: 0;
         }
-
 
         /* Event Detail Popup */
         .event-detail {
@@ -652,12 +802,10 @@
             -webkit-user-select: text;
         }
 
-
         .event-detail.visible {
             opacity: 1;
             pointer-events: auto;
         }
-
 
         .event-detail .detail-title {
             font-size: 0.7rem;
@@ -666,11 +814,9 @@
             margin-bottom: 0.3rem;
         }
 
-
         .event-detail.expanded .detail-title {
             padding-right: 7rem;
         }
-
 
         .event-detail .detail-dates {
             font-size: 0.65rem;
@@ -678,6 +824,16 @@
             letter-spacing: 0.05em;
         }
 
+        .event-detail .detail-category {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin: -0.5rem 0 0.8rem;
+            opacity: 0.7;
+        }
 
         .event-detail .detail-image {
             width: 100%;
@@ -686,7 +842,6 @@
             margin-bottom: 0.8rem;
             filter: grayscale(30%);
         }
-
 
         .event-detail .detail-image-placeholder {
             width: 100%;
@@ -701,7 +856,6 @@
             letter-spacing: 0.1em;
         }
 
-
         .event-detail .detail-notes {
             font-size: 0.7rem;
             line-height: 1.7;
@@ -710,14 +864,12 @@
             transition: max-height 0.3s ease, margin-top 0.3s ease;
         }
 
-
         .event-detail.expanded .detail-notes {
             max-height: 400px;
             margin-top: 0.5rem;
             padding-top: 0.5rem;
             border-top: 1px solid var(--fg);
         }
-
 
         .event-detail .expand-hint {
             font-size: 0.55rem;
@@ -727,11 +879,9 @@
             opacity: 0.5;
         }
 
-
         .event-detail.expanded .expand-hint {
             display: none;
         }
-
 
         .event-detail .edit-btn,
         .event-detail .zoom-event-btn {
@@ -749,16 +899,13 @@
             letter-spacing: 0.1em;
         }
 
-
         .event-detail .edit-btn {
             right: 2.5rem;
         }
 
-
         .event-detail .zoom-event-btn {
             right: 5.5rem;
         }
-
 
         .event-detail .delete-btn {
             display: none;
@@ -774,13 +921,11 @@
             line-height: 1;
         }
 
-
         .event-detail.expanded .edit-btn,
         .event-detail.expanded .zoom-event-btn,
         .event-detail.expanded .delete-btn {
             display: block;
         }
-
 
         .empty-state {
             text-align: center;
@@ -789,7 +934,6 @@
             text-transform: uppercase;
             letter-spacing: 0.2em;
         }
-
 
         .grid-line {
             position: absolute;
@@ -800,11 +944,9 @@
             opacity: 0.15;
         }
 
-
         .grid-line.major {
             opacity: 0.35;
         }
-
 
         .lane-guideline {
             position: absolute;
@@ -815,13 +957,11 @@
             opacity: 0.15;
         }
 
-
         .empty-dashboard {
             display: none;
             text-align: center;
             padding: 6rem 2rem;
         }
-
 
         .empty-dashboard-text {
             font-size: 0.7rem;
@@ -841,10 +981,8 @@
             </button>
         </div>
 
-
         <!-- Tabs -->
         <div class="tab-bar" id="tabBar"></div>
-
 
         <!-- New Tab Modal -->
         <div class="modal-overlay" id="newTabModal">
@@ -869,18 +1007,44 @@
             </div>
         </div>
 
+        <!-- Category Manager Modal -->
+        <div class="modal-overlay" id="categoryModal">
+            <div class="modal-box category-modal-box">
+                <h2 id="categoryModalTitle">Categories</h2>
+                <div class="category-list" id="categoryList"></div>
+                <form class="category-add" id="categoryAddForm">
+                    <input type="color" id="newCategoryColor" value="#7a8b7a" title="Category colour">
+                    <input type="text" id="newCategoryName" placeholder="New category name" maxlength="40">
+                    <button type="submit">Add</button>
+                </form>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="categoryModalClose">Done</button>
+                </div>
+            </div>
+        </div>
 
-        <!-- Add Event -->
+        <!-- Add Event / Category controls -->
         <div class="add-panel">
-            <button class="add-toggle" id="addToggle">+ Add Event</button>
+            <div class="add-panel-bar">
+                <button class="add-toggle" id="addToggle">+ Add Event</button>
+                <div class="panel-controls">
+                    <button class="add-toggle" id="manageCategoriesBtn" type="button">Categories</button>
+                    <div class="filter-wrap">
+                        <button class="add-toggle" id="filterToggle" type="button">Filter</button>
+                        <div class="filter-menu" id="filterMenu"></div>
+                    </div>
+                </div>
+            </div>
             <form class="add-form" id="addForm">
                 <label>
                     Title
                     <input type="text" id="eventTitle" required placeholder="e.g. Cuban Missile Crisis">
                 </label>
                 <label>
-                    Image URL
-                    <input type="text" id="eventImage" placeholder="https://...">
+                    Category
+                    <select id="eventCategory">
+                        <option value="">None</option>
+                    </select>
                 </label>
                 <label>
                     Start Date
@@ -889,6 +1053,10 @@
                 <label>
                     End Date
                     <input type="date" id="eventEnd" required>
+                </label>
+                <label class="full-width">
+                    Image URL
+                    <input type="text" id="eventImage" placeholder="https://...">
                 </label>
                 <label class="full-width">
                     Notes
@@ -901,7 +1069,6 @@
             </form>
         </div>
 
-
         <!-- Timeline -->
         <div class="timeline-container">
             <div class="timeline-scroll" id="timelineScroll">
@@ -910,18 +1077,15 @@
             </div>
         </div>
 
-
         <div class="empty-dashboard" id="emptyDashboard">
             <p class="empty-dashboard-text">You don't have any timelines yet</p>
             <button class="add-toggle" id="emptyDashboardCreateBtn">+ Create Your First Timeline</button>
         </div>
 
-
         <div class="empty-state" id="emptyState">
             No events yet — add your first entry above
         </div>
     </div>
-
 
     <script>
         const COLORS = [
@@ -930,13 +1094,12 @@
             '#9b7a6b', '#6b8b8b', '#8b6b6b', '#6b9b7a'
         ];
 
-
         const LANE_HEIGHT = 44;
         const LANE_GAP = 6;
         const STORAGE_KEY = 'timelineApp';
         const THEME_KEY = 'timelineTheme';
         const AXIS_PADDING_LEFT = 30;
-
+        const UNCATEGORISED_KEY = '__none';   // filter key for events with no category
 
         // Zoom constants
         const DAY_MS = 86400000;
@@ -944,7 +1107,6 @@
         const MIN_BAR_WIDTH = 4;             // keep tiny events hoverable
         const DOUBLE_CLICK_MS = 400;
         const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
 
         // Axis tick options, from finest to coarsest. minPx = minimum spacing between ticks.
         const TICK_STEPS = [
@@ -963,17 +1125,14 @@
         ];
         const UNIT_MS = { day: DAY_MS, month: 30.44 * DAY_MS, year: 365.25 * DAY_MS };
 
-
         // ---------- Light / dark theme ----------
         const themeToggle = document.getElementById('themeToggle');
-
 
         function applyTheme(theme) {
             document.documentElement.dataset.theme = theme;
             themeToggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
             themeToggle.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
         }
-
 
         themeToggle.addEventListener('click', () => {
             const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -985,16 +1144,13 @@
             }
         });
 
-
         applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
-
 
         // Default data
         const defaultData = {
             activeTab: null,
             tabs: []
         };
-
 
         // State
         let appData = loadAppData();
@@ -1003,6 +1159,16 @@
         let editingEventId = null;
         let dragState = null;       // set while drag-selecting a range to zoom into
 
+        // Make sure older saved timelines have the category fields
+        function ensureTabShape(tab) {
+            if (!Array.isArray(tab.events)) tab.events = [];
+            if (!Array.isArray(tab.categories)) tab.categories = [];
+            if (!Array.isArray(tab.hiddenCategories)) tab.hiddenCategories = [];
+            tab.events.forEach(evt => {
+                if (evt.categoryId === undefined) evt.categoryId = null;
+            });
+            return tab;
+        }
 
         function loadAppData() {
             try {
@@ -1010,6 +1176,7 @@
                 if (saved) {
                     const parsed = JSON.parse(saved);
                     if (parsed && Array.isArray(parsed.tabs)) {
+                        parsed.tabs.forEach(ensureTabShape);
                         return parsed;
                     }
                 }
@@ -1020,7 +1187,6 @@
             return JSON.parse(JSON.stringify(defaultData));
         }
 
-
         function saveAppData() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
@@ -1029,44 +1195,81 @@
             }
         }
 
-
         function hasTabs() {
             return appData.tabs && appData.tabs.length > 0;
         }
-
 
         function getActiveTab() {
             if (!hasTabs()) return null;
             return appData.tabs.find(t => t.id === appData.activeTab) || appData.tabs[0];
         }
 
-
         function getNextEventId(tab) {
             if (tab.events.length === 0) return 1;
             return Math.max(...tab.events.map(e => Number(e.id) || 0)) + 1;
         }
 
-
         function getTimelineWidth() {
             return Math.max(window.innerWidth - 100, 900);
         }
-
 
         function formatDate(dateStr) {
             const [year, month, day] = dateStr.split('-');
             return `${parseInt(day)} ${MONTHS[parseInt(month) - 1]} ${year}`;
         }
 
-
         function formatMs(ms) {
             const d = new Date(ms);
             return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
         }
 
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        // ---------- Categories ----------
+
+        function getCategory(tab, categoryId) {
+            if (!tab || !categoryId) return null;
+            return tab.categories.find(c => c.id === categoryId) || null;
+        }
+
+        // Key used by the filter: the category id, or a special value for uncategorised events
+        function categoryKey(evt) {
+            return evt.categoryId ? String(evt.categoryId) : UNCATEGORISED_KEY;
+        }
+
+        function isEventVisible(tab, evt) {
+            return !tab.hiddenCategories.includes(categoryKey(evt));
+        }
+
+        function getEventColor(tab, evt) {
+            const cat = getCategory(tab, evt.categoryId);
+            return (cat && cat.color) || evt.color || COLORS[0];
+        }
+
+        function addCategory(tab, name, color) {
+            const cat = {
+                id: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                name,
+                color
+            };
+            tab.categories.push(cat);
+            return cat;
+        }
+
+        function deleteCategory(tab, categoryId) {
+            tab.categories = tab.categories.filter(c => c.id !== categoryId);
+            tab.hiddenCategories = tab.hiddenCategories.filter(k => k !== categoryId);
+            tab.events.forEach(evt => {
+                if (evt.categoryId === categoryId) evt.categoryId = null;
+            });
+        }
 
         // ---------- View range (zoom) helpers ----------
         // All times are UTC milliseconds. Event end dates are inclusive (a one-day event covers that whole day).
-
 
         function eventRange(evt) {
             const s = Date.parse(evt.start);
@@ -1075,14 +1278,12 @@
             return { s, e };
         }
 
-
         function getFullRange(tab) {
             return {
                 start: Date.UTC(tab.yearStart, 0, 1),
                 end: Date.UTC(tab.yearEnd, 0, 1)
             };
         }
-
 
         function clampView(tab, start, end) {
             const full = getFullRange(tab);
@@ -1093,7 +1294,6 @@
             return { start: Math.round(s), end: Math.round(s + span) };
         }
 
-
         function getView(tab) {
             if (tab.view && isFinite(tab.view.start) && isFinite(tab.view.end) && tab.view.end > tab.view.start) {
                 return clampView(tab, tab.view.start, tab.view.end);
@@ -1101,29 +1301,24 @@
             return getFullRange(tab);
         }
 
-
         function isZoomed(tab) {
             const v = getView(tab);
             const f = getFullRange(tab);
             return v.start > f.start || v.end < f.end;
         }
 
-
         function timeToX(t, view) {
             const usable = getTimelineWidth() - AXIS_PADDING_LEFT;
             return AXIS_PADDING_LEFT + (t - view.start) / (view.end - view.start) * usable;
         }
-
 
         function xToTime(x, view) {
             const usable = getTimelineWidth() - AXIS_PADDING_LEFT;
             return view.start + (x - AXIS_PADDING_LEFT) / usable * (view.end - view.start);
         }
 
-
         let renderQueued = false;
         let saveTimer = null;
-
 
         function queueRender() {
             if (renderQueued) return;
@@ -1133,7 +1328,6 @@
                 renderTimeline();
             });
         }
-
 
         function applyView(tab, start, end) {
             if (!tab) return;
@@ -1146,13 +1340,11 @@
             saveTimer = setTimeout(saveAppData, 250);
         }
 
-
         function resetView(tab) {
             if (!tab) return;
             const full = getFullRange(tab);
             applyView(tab, full.start, full.end);
         }
-
 
         function zoomToEvent(evt) {
             const tab = getActiveTab();
@@ -1162,9 +1354,7 @@
             applyView(tab, s - pad, e + pad);
         }
 
-
         // ---------- Axis ticks ----------
-
 
         function chooseStep(view) {
             const pxPerMs = (getTimelineWidth() - AXIS_PADDING_LEFT) / (view.end - view.start);
@@ -1174,7 +1364,6 @@
             return TICK_STEPS[TICK_STEPS.length - 1];
         }
 
-
         function advanceStep(t, step) {
             const d = new Date(t);
             if (step.unit === 'year') return Date.UTC(d.getUTCFullYear() + step.n, 0, 1);
@@ -1182,11 +1371,9 @@
             return t + step.n * DAY_MS;
         }
 
-
         function generateTicks(view, step) {
             const ticks = [];
             const s = new Date(view.start);
-
 
             if (step.unit === 'year') {
                 let y = s.getUTCFullYear();
@@ -1221,7 +1408,6 @@
             return ticks;
         }
 
-
         // Upper axis row: years when showing months, months when showing days
         function generateContext(view, step) {
             if (step.unit === 'year') return [];
@@ -1246,12 +1432,10 @@
             return periods;
         }
 
-
         // Render tabs
         function renderTabs() {
             const bar = document.getElementById('tabBar');
             bar.innerHTML = '';
-
 
             if (!hasTabs()) {
                 bar.style.display = 'none';
@@ -1259,12 +1443,10 @@
             }
             bar.style.display = 'flex';
 
-
             appData.tabs.forEach(tab => {
                 const btn = document.createElement('button');
                 btn.className = 'tab-btn' + (tab.id === appData.activeTab ? ' active' : '') + (tab.deletable ? ' deletable' : '');
                 btn.innerHTML = `${tab.title}${tab.deletable ? '<span class="tab-close">×</span>' : ''}`;
-
 
                 btn.addEventListener('click', (e) => {
                     if (e.target.classList.contains('tab-close')) {
@@ -1274,10 +1456,8 @@
                     switchTab(tab.id);
                 });
 
-
                 bar.appendChild(btn);
             });
-
 
             const addBtn = document.createElement('button');
             addBtn.className = 'tab-add-btn';
@@ -1287,22 +1467,20 @@
             bar.appendChild(addBtn);
         }
 
-
         function switchTab(tabId) {
             hideDetail();
             closeForm();
+            closeFilterMenu();
             appData.activeTab = tabId;
             saveAppData();
             renderTabs();
             renderTimeline();
         }
 
-
         function deleteTab(tabId) {
             const tab = appData.tabs.find(t => t.id === tabId);
             if (!tab || !tab.deletable) return;
             if (!confirm(`Delete "${tab.title}" timeline and all its events?`)) return;
-
 
             appData.tabs = appData.tabs.filter(t => t.id !== tabId);
             if (appData.activeTab === tabId) {
@@ -1313,7 +1491,6 @@
             renderTimeline();
         }
 
-
         // New Tab Modal
         function openNewTabModal() {
             document.getElementById('newTabModal').classList.add('visible');
@@ -1323,34 +1500,30 @@
             setTimeout(() => document.getElementById('newTabTitle').focus(), 100);
         }
 
-
         document.getElementById('newTabCancel').addEventListener('click', () => {
             document.getElementById('newTabModal').classList.remove('visible');
         });
 
-
         document.getElementById('emptyDashboardCreateBtn').addEventListener('click', openNewTabModal);
-
 
         document.getElementById('newTabConfirm').addEventListener('click', () => {
             const title = document.getElementById('newTabTitle').value.trim();
             const yStart = parseInt(document.getElementById('newTabStart').value) || 2000;
             const yEnd = parseInt(document.getElementById('newTabEnd').value) + 1 || (yStart + 10);
 
-
             if (!title) { alert('Please enter a title.'); return; }
             if (yEnd <= yStart) { alert('End year must be after start year.'); return; }
 
-
-            const newTab = {
+            const newTab = ensureTabShape({
                 id: 'custom-' + Date.now(),
                 title,
                 deletable: true,
                 yearStart: yStart,
                 yearEnd: yEnd,
-                events: []
-            };
-
+                events: [],
+                categories: [],
+                hiddenCategories: []
+            });
 
             appData.tabs.push(newTab);
             appData.activeTab = newTab.id;
@@ -1360,23 +1533,243 @@
             renderTimeline();
         });
 
-
         document.getElementById('newTabModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 document.getElementById('newTabModal').classList.remove('visible');
             }
         });
 
+        // ---------- Category manager modal ----------
+        const categoryModal = document.getElementById('categoryModal');
+        const categoryAddForm = document.getElementById('categoryAddForm');
+
+        function openCategoryModal() {
+            const tab = getActiveTab();
+            if (!tab) return;
+            closeFilterMenu();
+            document.getElementById('categoryModalTitle').textContent = `Categories — ${tab.title}`;
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('newCategoryColor').value = COLORS[tab.categories.length % COLORS.length];
+            renderCategoryList();
+            categoryModal.classList.add('visible');
+            setTimeout(() => document.getElementById('newCategoryName').focus(), 100);
+        }
+
+        function closeCategoryModal() {
+            categoryModal.classList.remove('visible');
+        }
+
+        function renderCategoryList() {
+            const tab = getActiveTab();
+            const list = document.getElementById('categoryList');
+            list.innerHTML = '';
+            if (!tab) return;
+
+            if (tab.categories.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'category-empty';
+                empty.textContent = 'No categories yet — add one below';
+                list.appendChild(empty);
+                return;
+            }
+
+            tab.categories.forEach(cat => {
+                const row = document.createElement('div');
+                row.className = 'category-row';
+
+                const color = document.createElement('input');
+                color.type = 'color';
+                color.value = cat.color;
+                color.title = 'Change colour';
+                color.addEventListener('input', () => {
+                    cat.color = color.value;
+                    saveAppData();
+                    renderTimeline();
+                });
+
+                const name = document.createElement('input');
+                name.type = 'text';
+                name.value = cat.name;
+                name.maxLength = 40;
+                name.title = 'Rename category';
+                name.addEventListener('change', () => {
+                    const v = name.value.trim();
+                    if (!v) { name.value = cat.name; return; }
+                    cat.name = v;
+                    saveAppData();
+                    renderTimeline();
+                });
+
+                const n = tab.events.filter(e => e.categoryId === cat.id).length;
+                const count = document.createElement('span');
+                count.className = 'category-count';
+                count.textContent = `${n} event${n === 1 ? '' : 's'}`;
+
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.className = 'category-delete';
+                del.textContent = '×';
+                del.title = 'Delete category';
+                del.addEventListener('click', () => {
+                    const msg = n > 0
+                        ? `Delete "${cat.name}"? ${n} event${n === 1 ? '' : 's'} will become uncategorised.`
+                        : `Delete "${cat.name}"?`;
+                    if (!confirm(msg)) return;
+                    deleteCategory(tab, cat.id);
+                    saveAppData();
+                    renderCategoryList();
+                    renderTimeline();
+                });
+
+                row.append(color, name, count, del);
+                list.appendChild(row);
+            });
+        }
+
+        categoryAddForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const tab = getActiveTab();
+            if (!tab) return;
+            const nameInput = document.getElementById('newCategoryName');
+            const colorInput = document.getElementById('newCategoryColor');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            if (tab.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+                alert('A category with that name already exists.');
+                return;
+            }
+            addCategory(tab, name, colorInput.value);
+            saveAppData();
+            nameInput.value = '';
+            colorInput.value = COLORS[tab.categories.length % COLORS.length];
+            renderCategoryList();
+            renderTimeline();
+            nameInput.focus();
+        });
+
+        document.getElementById('manageCategoriesBtn').addEventListener('click', openCategoryModal);
+        document.getElementById('categoryModalClose').addEventListener('click', closeCategoryModal);
+        categoryModal.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeCategoryModal();
+        });
+
+        // ---------- Category filter dropdown ----------
+        const filterToggle = document.getElementById('filterToggle');
+        const filterMenu = document.getElementById('filterMenu');
+
+        function closeFilterMenu() {
+            filterMenu.classList.remove('visible');
+        }
+
+        filterToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterMenu.classList.toggle('visible');
+        });
+
+        filterMenu.addEventListener('click', (e) => e.stopPropagation());
+
+        function setCategoryHidden(tab, key, hidden) {
+            const set = new Set(tab.hiddenCategories);
+            if (hidden) set.add(key); else set.delete(key);
+            tab.hiddenCategories = [...set];
+            saveAppData();
+            renderTimeline();
+        }
+
+        function renderFilterControls() {
+            const tab = getActiveTab();
+            filterMenu.innerHTML = '';
+            if (!tab) return;
+
+            const options = [
+                ...tab.categories.map(c => ({ key: c.id, name: c.name, color: c.color })),
+                { key: UNCATEGORISED_KEY, name: 'Uncategorised', color: null }
+            ];
+
+            // Drop hidden keys that no longer exist
+            const validKeys = new Set(options.map(o => o.key));
+            tab.hiddenCategories = tab.hiddenCategories.filter(k => validKeys.has(k));
+
+            const hiddenCount = tab.hiddenCategories.length;
+            filterToggle.textContent = hiddenCount > 0 ? `Filter · ${hiddenCount} hidden` : 'Filter';
+            filterToggle.classList.toggle('filter-active', hiddenCount > 0);
+
+            const title = document.createElement('div');
+            title.className = 'filter-menu-title';
+            title.textContent = 'Show categories';
+            filterMenu.appendChild(title);
+
+            options.forEach(opt => {
+                const label = document.createElement('label');
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = !tab.hiddenCategories.includes(opt.key);
+                cb.addEventListener('change', () => setCategoryHidden(tab, opt.key, !cb.checked));
+
+                const swatch = document.createElement('span');
+                swatch.className = 'cat-swatch' + (opt.color ? '' : ' none');
+                if (opt.color) swatch.style.setProperty('--event-color', opt.color);
+
+                const text = document.createElement('span');
+                const n = tab.events.filter(e => categoryKey(e) === opt.key).length;
+                text.textContent = `${opt.name} (${n})`;
+
+                label.append(cb, swatch, text);
+                filterMenu.appendChild(label);
+            });
+
+            if (tab.categories.length === 0) {
+                const hint = document.createElement('div');
+                hint.className = 'filter-menu-hint';
+                hint.textContent = 'Create categories to filter by them.';
+                filterMenu.appendChild(hint);
+            }
+
+            const actions = document.createElement('div');
+            actions.className = 'filter-menu-actions';
+            const allBtn = document.createElement('button');
+            allBtn.type = 'button';
+            allBtn.textContent = 'Show all';
+            allBtn.addEventListener('click', () => {
+                tab.hiddenCategories = [];
+                saveAppData();
+                renderTimeline();
+            });
+            const noneBtn = document.createElement('button');
+            noneBtn.type = 'button';
+            noneBtn.textContent = 'Hide all';
+            noneBtn.addEventListener('click', () => {
+                tab.hiddenCategories = options.map(o => o.key);
+                saveAppData();
+                renderTimeline();
+            });
+            actions.append(allBtn, noneBtn);
+            filterMenu.appendChild(actions);
+        }
+
+        // Category select in the event form
+        function renderCategorySelect() {
+            const tab = getActiveTab();
+            const select = document.getElementById('eventCategory');
+            const current = select.value;
+            select.innerHTML = '<option value="">None</option>';
+            if (!tab) return;
+            tab.categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.textContent = cat.name;
+                select.appendChild(opt);
+            });
+            select.value = tab.categories.some(c => c.id === current) ? current : '';
+        }
 
         // ---------- Timeline rendering ----------
-
 
         function renderAxis(view, step, ticks, context) {
             const axis = document.getElementById('timelineAxis');
             axis.innerHTML = '';
             const width = getTimelineWidth();
             axis.style.width = width + 'px';
-
 
             // Context row (years / months above the tick labels)
             context.forEach(p => {
@@ -1393,7 +1786,6 @@
                 el.title = `Zoom to ${p.label}`;
                 axis.appendChild(el);
             });
-
 
             // Tick labels
             ticks.forEach(tk => {
@@ -1415,14 +1807,13 @@
             });
         }
 
-
-        // Positions visible events for the current view and packs them into lanes
+        // Positions visible (unfiltered, in-view) events for the current view and packs them into lanes
         function layoutEvents(tab, view) {
             const width = getTimelineWidth();
             const items = [];
 
-
             tab.events.forEach(evt => {
+                if (!isEventVisible(tab, evt)) return;
                 const { s, e } = eventRange(evt);
                 if (isNaN(s) || e <= view.start || s >= view.end) return;
                 let left = Math.max(timeToX(s, view), AXIS_PADDING_LEFT);
@@ -1435,7 +1826,6 @@
                     clipRight: e > view.end
                 });
             });
-
 
             items.sort((a, b) => a.left - b.left || b.width - a.width);
             const laneEnds = [];
@@ -1451,62 +1841,61 @@
             return items;
         }
 
-
         function renderTimeline() {
             const emptyDashboard = document.getElementById('emptyDashboard');
             const addPanel = document.querySelector('.add-panel');
             const timelineContainer = document.querySelector('.timeline-container');
             const emptyState = document.getElementById('emptyState');
 
-
             if (!hasTabs()) {
                 emptyDashboard.style.display = 'block';
                 addPanel.style.display = 'none';
                 timelineContainer.style.display = 'none';
                 emptyState.style.display = 'none';
+                closeFilterMenu();
+                closeCategoryModal();
                 return;
             }
             emptyDashboard.style.display = 'none';
             addPanel.style.display = 'block';
             timelineContainer.style.display = 'block';
 
-
             const tab = getActiveTab();
             const view = getView(tab);
             const container = document.getElementById('lanesContainer');
             const scroll = document.getElementById('timelineScroll');
 
+            renderFilterControls();
+            renderCategorySelect();
 
             // Rebuilding the lanes removes any open pop-up along with the bars
             container.innerHTML = '';
             detailEl = null;
             activeEventId = null;
 
-
             const width = getTimelineWidth();
             scroll.style.width = width + 'px';
-
 
             const step = chooseStep(view);
             const ticks = generateTicks(view, step);
             const context = generateContext(view, step);
             const majorTimes = new Set(context.map(p => p.start));
 
-
             renderAxis(view, step, ticks, context);
 
-
             const items = layoutEvents(tab, view);
-
+            const unfilteredCount = tab.events.filter(e => isEventVisible(tab, e)).length;
 
             const totalLanes = items.reduce((m, i) => Math.max(m, i.lane + 1), 0);
             container.style.height = (totalLanes > 0
                 ? totalLanes * (LANE_HEIGHT + LANE_GAP) + 20
                 : 100) + 'px';
 
-
             if (tab.events.length === 0) {
                 emptyState.textContent = 'No events yet — add your first entry above';
+                emptyState.style.display = 'block';
+            } else if (unfilteredCount === 0) {
+                emptyState.textContent = 'All events are hidden by the current filter';
                 emptyState.style.display = 'block';
             } else if (items.length === 0) {
                 emptyState.textContent = 'No events in this period — double-click the timeline to reset the view';
@@ -1514,7 +1903,6 @@
             } else {
                 emptyState.style.display = 'none';
             }
-
 
             // Lane guidelines
             for (let i = 0; i < totalLanes; i++) {
@@ -1524,7 +1912,6 @@
                 container.appendChild(guide);
             }
 
-
             // Grid lines
             ticks.forEach(tk => {
                 const gl = document.createElement('div');
@@ -1532,7 +1919,6 @@
                 gl.style.left = timeToX(tk.t, view) + 'px';
                 container.appendChild(gl);
             });
-
 
             // Event bars
             items.forEach(item => {
@@ -1542,19 +1928,16 @@
                     (item.clipLeft ? ' clip-left' : '') +
                     (item.clipRight ? ' clip-right' : '');
                 bar.dataset.id = evt.id;
-                bar.style.setProperty('--event-color', evt.color);
-
+                bar.style.setProperty('--event-color', getEventColor(tab, evt));
 
                 bar.style.left = item.left + 'px';
                 bar.style.width = item.width + 'px';
                 bar.style.top = (item.lane * (LANE_HEIGHT + LANE_GAP)) + 'px';
 
-
                 const label = document.createElement('span');
                 label.className = 'bar-label';
                 label.textContent = evt.title;
                 bar.appendChild(label);
-
 
                 bar.addEventListener('mouseenter', () => {
                     // No hover pop-ups while drag-selecting a range
@@ -1580,30 +1963,29 @@
                     zoomToEvent(evt);
                 });
 
-
                 container.appendChild(bar);
             });
         }
 
-
         function showDetail(evt, barEl, tab) {
             clearTimeout(window._hideTimer);
             if (detailEl) detailEl.remove();
-
 
             const container = document.getElementById('lanesContainer');
             detailEl = document.createElement('div');
             detailEl.className = 'event-detail';
             detailEl.dataset.eventId = evt.id;
 
-
             let imageHtml = evt.image
                 ? `<img class="detail-image" src="${evt.image}" alt="${evt.title}" onerror="this.outerHTML='<div class=\\'detail-image-placeholder\\'>image unavailable</div>'">`
                 : `<div class="detail-image-placeholder">no image</div>`;
 
-
             const notesHtml = evt.notes ? `<div class="detail-notes">${evt.notes}</div>` : '';
 
+            const cat = getCategory(tab, evt.categoryId);
+            const categoryHtml = cat
+                ? `<div class="detail-category"><span class="cat-swatch" style="--event-color:${escapeHtml(cat.color)}"></span>${escapeHtml(cat.name)}</div>`
+                : '';
 
             detailEl.innerHTML = `
                 <button class="zoom-event-btn" data-id="${evt.id}" title="Zoom the timeline to this event">ZOOM</button>
@@ -1611,22 +1993,20 @@
                 <button class="delete-btn" data-id="${evt.id}">×</button>
                 <div class="detail-title">${evt.title}</div>
                 <div class="detail-dates">${formatDate(evt.start)} — ${formatDate(evt.end)}</div>
+                ${categoryHtml}
                 ${imageHtml}
                 <div class="expand-hint">click for notes</div>
                 ${notesHtml}
             `;
-
 
             let left = barEl.offsetLeft;
             let top = barEl.offsetTop + LANE_HEIGHT + 8;
             if (left + 280 > getTimelineWidth()) left = getTimelineWidth() - 290;
             if (left < 0) left = 0;
 
-
             detailEl.style.left = left + 'px';
             detailEl.style.top = top + 'px';
             container.appendChild(detailEl);
-
 
             const el = detailEl;
             requestAnimationFrame(() => {
@@ -1634,24 +2014,20 @@
                 if (activeEventId === evt.id) el.classList.add('expanded');
             });
 
-
             detailEl.querySelector('.zoom-event-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 zoomToEvent(evt);
             });
-
 
             detailEl.querySelector('.edit-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 openEditForm(evt);
             });
 
-
             detailEl.querySelector('.delete-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 hideDetail();
             });
-
 
             detailEl.addEventListener('mouseenter', () => clearTimeout(window._hideTimer));
             detailEl.addEventListener('mouseleave', () => {
@@ -1669,12 +2045,10 @@
             });
         }
 
-
         function hideDetail(forId) {
             if (forId !== undefined && (!detailEl || String(detailEl.dataset.eventId) !== String(forId))) {
                 return;
             }
-
 
             if (detailEl) {
                 detailEl.classList.remove('visible');
@@ -1684,7 +2058,6 @@
             activeEventId = null;
             document.querySelectorAll('.event-bar.active').forEach(el => el.classList.remove('active'));
         }
-
 
         function toggleExpand(evt, barEl) {
             if (activeEventId === evt.id) {
@@ -1704,13 +2077,22 @@
             }
         }
 
-
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.event-bar') && !e.target.closest('.event-detail')) {
                 hideDetail();
             }
+            if (!e.target.closest('.filter-wrap')) {
+                closeFilterMenu();
+            }
         });
 
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFilterMenu();
+                closeCategoryModal();
+                document.getElementById('newTabModal').classList.remove('visible');
+            }
+        });
 
         // ---------- Mouse / trackpad interactions on the timeline ----------
         //   drag across axis or empty space  -> zoom to the highlighted range
@@ -1719,25 +2101,20 @@
         //   ctrl/cmd + scroll (or pinch)     -> zoom around the cursor
         //   horizontal scroll while zoomed   -> move earlier / later
 
-
         const scrollEl = document.getElementById('timelineScroll');
         let selectionEl = null;
         let lastEmptyClick = null;
-
 
         function relX(e) {
             return e.clientX - scrollEl.getBoundingClientRect().left;
         }
 
-
         function clampX(x) {
             return Math.min(Math.max(x, AXIS_PADDING_LEFT), getTimelineWidth());
         }
 
-
         function floorDay(t) { return Math.floor(t / DAY_MS) * DAY_MS; }
         function ceilDay(t) { return Math.ceil(t / DAY_MS) * DAY_MS; }
-
 
         function selectionRange(x1, x2, view) {
             const a = floorDay(xToTime(Math.min(x1, x2), view));
@@ -1745,7 +2122,6 @@
             if (b <= a) b = a + DAY_MS;
             return { start: a, end: b };
         }
-
 
         function endDrag() {
             dragState = null;
@@ -1756,21 +2132,17 @@
             document.body.classList.remove('is-dragging');
         }
 
-
         scrollEl.addEventListener('pointerdown', (e) => {
             if (e.button !== 0 || !hasTabs()) return;
             if (e.target.closest('.event-bar, .event-detail')) return;
             if (!e.target.closest('#timelineAxis, #lanesContainer')) return;
 
-
             e.preventDefault();
             if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-
 
             // Dismiss a lingering hover pop-up right away (a pinned one is left alone)
             clearTimeout(window._hideTimer);
             if (activeEventId === null) hideDetail();
-
 
             const tab = getActiveTab();
             dragState = {
@@ -1783,15 +2155,12 @@
             document.body.classList.add('is-dragging');
         });
 
-
         window.addEventListener('pointermove', (e) => {
             if (!dragState) return;
-
 
             const x = clampX(relX(e));
             if (!dragState.moved && Math.abs(x - dragState.startX) < 5) return;
             dragState.moved = true;
-
 
             if (!selectionEl) {
                 selectionEl = document.createElement('div');
@@ -1804,19 +2173,15 @@
             selectionEl.style.left = Math.min(x, dragState.startX) + 'px';
             selectionEl.style.width = Math.abs(x - dragState.startX) + 'px';
 
-
             const r = selectionRange(dragState.startX, x, dragState.view);
             selectionEl.firstChild.textContent = `${formatMs(r.start)} — ${formatMs(r.end - 1)}`;
         });
 
-
         window.addEventListener('pointerup', (e) => {
             if (!dragState) return;
 
-
             const st = dragState;
             endDrag();
-
 
             // Drag: zoom to the highlighted range
             if (st.moved) {
@@ -1826,7 +2191,6 @@
                 return;
             }
 
-
             // Click on a year / month label: zoom into that period
             const z = st.target.closest('[data-zoom-start]');
             if (z) {
@@ -1835,13 +2199,11 @@
                 return;
             }
 
-
             // Click on empty space: a second click close by (in time and position) resets the zoom
             const isDouble = lastEmptyClick &&
                 e.timeStamp - lastEmptyClick.time < DOUBLE_CLICK_MS &&
                 Math.abs(e.clientX - lastEmptyClick.x) < 10 &&
                 Math.abs(e.clientY - lastEmptyClick.y) < 10;
-
 
             if (isDouble) {
                 lastEmptyClick = null;
@@ -1851,16 +2213,13 @@
             }
         });
 
-
         window.addEventListener('pointercancel', endDrag);
-
 
         scrollEl.addEventListener('wheel', (e) => {
             if (!hasTabs()) return;
             const tab = getActiveTab();
             const view = getView(tab);
             const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? 400 : 1);
-
 
             if (e.ctrlKey || e.metaKey) {
                 e.preventDefault();
@@ -1870,7 +2229,6 @@
                 return;
             }
 
-
             if (isZoomed(tab) && (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY))) {
                 e.preventDefault();
                 const dpx = (e.deltaX || e.deltaY) * unit;
@@ -1879,13 +2237,11 @@
             }
         }, { passive: false });
 
-
         // ---------- Form ----------
         const addToggle = document.getElementById('addToggle');
         const addForm = document.getElementById('addForm');
         const deleteEventBtn = document.getElementById('deleteEventBtn');
         const formSubmitBtn = document.getElementById('formSubmitBtn');
-
 
         function closeForm() {
             addForm.classList.remove('visible');
@@ -1895,21 +2251,21 @@
             addForm.reset();
         }
 
-
         function openEditForm(evt) {
             editingEventId = evt.id;
             hideDetail();
+            renderCategorySelect();
             document.getElementById('eventTitle').value = evt.title;
             document.getElementById('eventImage').value = evt.image || '';
             document.getElementById('eventStart').value = evt.start;
             document.getElementById('eventEnd').value = evt.end;
             document.getElementById('eventNotes').value = evt.notes || '';
+            document.getElementById('eventCategory').value = evt.categoryId || '';
             formSubmitBtn.textContent = 'Update Event';
             deleteEventBtn.classList.add('visible');
             addForm.classList.add('visible');
             addForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-
 
         addToggle.addEventListener('click', () => {
             if (addForm.classList.contains('visible')) {
@@ -1918,10 +2274,10 @@
                 editingEventId = null;
                 formSubmitBtn.textContent = 'Save Event';
                 deleteEventBtn.classList.remove('visible');
+                renderCategorySelect();
                 addForm.classList.add('visible');
             }
         });
-
 
         addForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -1931,32 +2287,31 @@
             const start = document.getElementById('eventStart').value;
             const end = document.getElementById('eventEnd').value;
             const notes = document.getElementById('eventNotes').value.trim();
-
+            const categoryValue = document.getElementById('eventCategory').value;
+            const categoryId = getCategory(tab, categoryValue) ? categoryValue : null;
 
             if (!title || !start || !end) return;
             if (new Date(end) < new Date(start)) { alert('End date must be after start date.'); return; }
-
 
             if (editingEventId !== null) {
                 const evt = tab.events.find(ev => ev.id === editingEventId);
                 if (evt) {
                     evt.title = title; evt.image = image;
                     evt.start = start; evt.end = end; evt.notes = notes;
+                    evt.categoryId = categoryId;
                 }
             } else {
                 tab.events.push({
                     id: getNextEventId(tab),
-                    title, start, end, image, notes,
+                    title, start, end, image, notes, categoryId,
                     color: COLORS[(tab.events.length) % COLORS.length]
                 });
             }
-
 
             saveAppData();
             closeForm();
             renderTimeline();
         });
-
 
         deleteEventBtn.addEventListener('click', () => {
             if (editingEventId === null) return;
@@ -1965,17 +2320,14 @@
             if (!evt) return;
             if (!confirm(`Delete "${evt.title}"?`)) return;
 
-
             tab.events = tab.events.filter(ev => ev.id !== editingEventId);
             saveAppData();
             closeForm();
             renderTimeline();
         });
 
-
         // Resize handler
         window.addEventListener('resize', () => { hideDetail(); renderTimeline(); });
-
 
         // Initial render
         renderTabs();
